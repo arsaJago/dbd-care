@@ -1,36 +1,90 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DBD Care - Platform Edukasi Demam Berdarah Dengue
 
-## Getting Started
+Platform edukasi interaktif untuk membantu orangtua menjadi agent perubahan dalam mencegah DBD di keluarga.
 
-First, run the development server:
+## 🚀 Quick Start
 
 ```bash
+# 1. Install dependencies
+npm install
+
+# 2. Copy environment variables
+cp .env.local.example .env.local
+# Edit .env.local with your Firebase credentials
+
+# 3. Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Buka [http://localhost:3001](http://localhost:3001)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 👥 Default Login
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+**Admin**: 
+- Username: `admin`
+- Password: `admin123`
 
-## Learn More
+## 🌱 Seed Database
 
-To learn more about Next.js, take a look at the following resources:
+Populate database dengan data dummy:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+```bash
+# Buka di browser
+http://localhost:3001/seed
+```
+
+Klik tombol "Seed Database" untuk menambahkan:
+- 5 Materi edukasi DBD
+- 6 Poster edukasi
+- 6 Video YouTube
+
+## 🧹 Clear Database (Optional)
+
+Hapus semua data konten untuk seed ulang:
+
+```bash
+# Buka di browser
+http://localhost:3001/clear
+```
+
+## 📚 Full Documentation
+
+
+
+Lihat [SETUP-GUIDE.md](./SETUP-GUIDE.md) untuk instruksi lengkap setup Firebase dan deployment ke Vercel.- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+## 🎯 Features
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
+### User
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Custom auth (username + password)## Deploy on Vercel
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Materi edukasi DBD
+
+- Download poster/leafletThe easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+- Video pembelajaran
+
+- Quiz interaktifCheck out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+- Checklist pencegahan
+
+### Admin
+- Dashboard statistik
+- Upload materi, poster, video
+- Manage users & comments
+
+## 🛠️ Tech Stack
+
+- Next.js 14 + TypeScript
+- Tailwind CSS
+- Firebase (Firestore + Storage)
+- Vercel (Hosting)
+
+---
+
+Made with ❤️ for Indonesian families

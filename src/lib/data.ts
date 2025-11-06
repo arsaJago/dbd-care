@@ -1,0 +1,197 @@
+import { QuizQuestion } from '@/types';
+
+export const quizQuestions: QuizQuestion[] = [
+  {
+    id: 1,
+    question: 'Nyamuk penyebab DBD adalah?',
+    options: ['Anopheles', 'Aedes Aegypti', 'Culex', 'Semua benar'],
+    correctAnswer: 1,
+    explanation: 'Aedes Aegypti adalah nyamuk penyebab Demam Berdarah Dengue. Nyamuk ini memiliki ciri khas bintik-bintik putih di tubuhnya.',
+  },
+  {
+    id: 2,
+    question: '3M Plus terdiri dari?',
+    options: [
+      'Menguras, Menutup, Mengubur + Plus',
+      'Mencuci, Mengelap, Menyapu',
+      'Membersihkan, Membuang, Mengepel',
+      'Menyapu, Mencuci, Mengepel',
+    ],
+    correctAnswer: 0,
+    explanation: '3M Plus adalah: Menguras tempat penampungan air, Menutup rapat tempat penampungan air, Mengubur atau membuang barang bekas, Plus menggunakan lotion anti nyamuk, memelihara ikan pemakan jentik, dll.',
+  },
+  {
+    id: 3,
+    question: 'Gejala DBD yang paling khas adalah?',
+    options: [
+      'Batuk dan pilek',
+      'Demam tinggi mendadak disertai bintik merah',
+      'Sakit perut',
+      'Sakit kepala biasa',
+    ],
+    correctAnswer: 1,
+    explanation: 'Gejala khas DBD adalah demam tinggi mendadak (>38°C) selama 2-7 hari, disertai bintik-bintik merah di kulit, nyeri sendi dan otot.',
+  },
+  {
+    id: 4,
+    question: 'Kapan waktu nyamuk Aedes Aegypti paling aktif menggigit?',
+    options: [
+      'Malam hari',
+      'Pagi dan sore hari',
+      'Tengah malam',
+      'Sepanjang hari sama',
+    ],
+    correctAnswer: 1,
+    explanation: 'Nyamuk Aedes Aegypti paling aktif menggigit pada pagi hari (08:00-12:00) dan sore hari (15:00-17:00).',
+  },
+  {
+    id: 5,
+    question: 'Berapa lama masa inkubasi virus dengue dalam tubuh manusia?',
+    options: ['1-2 hari', '3-5 hari', '4-10 hari', '2 minggu'],
+    correctAnswer: 2,
+    explanation: 'Masa inkubasi virus dengue adalah 4-10 hari, dengan rata-rata 4-7 hari setelah digigit nyamuk yang terinfeksi.',
+  },
+  {
+    id: 6,
+    question: 'Apa yang harus dilakukan PERTAMA jika ada gejala DBD?',
+    options: [
+      'Minum obat antibiotik',
+      'Kompres air dingin',
+      'Segera ke dokter/puskesmas',
+      'Tidur saja',
+    ],
+    correctAnswer: 2,
+    explanation: 'Jika ada gejala DBD, SEGERA periksakan ke dokter atau puskesmas untuk pemeriksaan darah. Jangan minum obat sembarangan!',
+  },
+  {
+    id: 7,
+    question: 'Fogging (pengasapan) efektif membunuh?',
+    options: [
+      'Jentik nyamuk di air',
+      'Nyamuk dewasa yang terbang',
+      'Telur nyamuk',
+      'Semua stadium nyamuk',
+    ],
+    correctAnswer: 1,
+    explanation: 'Fogging hanya efektif membunuh nyamuk dewasa yang sedang terbang. Tidak membunuh jentik di air atau telur nyamuk. Karena itu 3M tetap penting!',
+  },
+  {
+    id: 8,
+    question: 'Berapa kali setidaknya harus menguras bak mandi?',
+    options: [
+      'Sebulan sekali',
+      'Seminggu sekali',
+      '2 minggu sekali',
+      'Setiap hari',
+    ],
+    correctAnswer: 1,
+    explanation: 'Bak mandi harus dikuras minimal SEMINGGU SEKALI karena telur nyamuk dapat menetas dalam 7-10 hari.',
+  },
+  {
+    id: 9,
+    question: 'Tanaman apa yang bisa membantu mengusir nyamuk?',
+    options: [
+      'Lavender dan Serai',
+      'Mawar',
+      'Kaktus',
+      'Anggrek',
+    ],
+    correctAnswer: 0,
+    explanation: 'Lavender, serai (lemongrass), dan zodia adalah tanaman yang aromanya dapat mengusir nyamuk.',
+  },
+  {
+    id: 10,
+    question: 'Apa yang dimaksud dengan PSN (Pemberantasan Sarang Nyamuk)?',
+    options: [
+      'Menyemprot nyamuk dengan racun',
+      'Kegiatan memberantas jentik nyamuk di tempat perkembangbiakannya',
+      'Memasang jebakan nyamuk',
+      'Membunuh nyamuk dengan raket',
+    ],
+    correctAnswer: 1,
+    explanation: 'PSN adalah kegiatan memberantas jentik nyamuk di tempat-tempat perkembangbiakannya melalui 3M Plus.',
+  },
+];
+
+export const checklistItems = [
+  { 
+    id: 1, 
+    title: 'Menguras Bak Mandi', 
+    description: 'Kuras bak mandi minimal 1x seminggu untuk mencegah jentik nyamuk',
+    category: '3M',
+    frequency: 'Mingguan',
+    checked: false 
+  },
+  { 
+    id: 2, 
+    title: 'Menutup Tempat Penampungan Air', 
+    description: 'Tutup rapat semua tempat penampungan air seperti tong, ember, dll',
+    category: '3M',
+    frequency: 'Setiap saat',
+    checked: false 
+  },
+  { 
+    id: 3, 
+    title: 'Mengubur Barang Bekas', 
+    description: 'Kubur atau buang barang bekas yang dapat menampung air hujan',
+    category: '3M',
+    frequency: 'Bulanan',
+    checked: false 
+  },
+  { 
+    id: 4, 
+    title: 'Gunakan Lotion Anti Nyamuk', 
+    description: 'Oleskan lotion anti nyamuk terutama saat beraktivitas di luar ruangan',
+    category: 'Plus',
+    frequency: 'Harian',
+    checked: false 
+  },
+  { 
+    id: 5, 
+    title: 'Pasang Kawat Kasa', 
+    description: 'Pasang kawat kasa di ventilasi dan jendela rumah',
+    category: 'Plus',
+    frequency: 'Permanen',
+    checked: false 
+  },
+  { 
+    id: 6, 
+    title: 'Tidur dengan Kelambu', 
+    description: 'Gunakan kelambu saat tidur terutama untuk anak-anak',
+    category: 'Plus',
+    frequency: 'Harian',
+    checked: false 
+  },
+  { 
+    id: 7, 
+    title: 'Tanam Pengusir Nyamuk', 
+    description: 'Tanam lavender, serai, atau zodia di sekitar rumah',
+    category: 'Plus',
+    frequency: 'Permanen',
+    checked: false 
+  },
+  { 
+    id: 8, 
+    title: 'Bersihkan Got Rutin', 
+    description: 'Bersihkan got dan saluran air dari sampah dan genangan',
+    category: 'Kebersihan',
+    frequency: 'Mingguan',
+    checked: false 
+  },
+  { 
+    id: 9, 
+    title: 'Cek Pot Tanaman', 
+    description: 'Periksa dan kosongkan genangan air di tatakan pot tanaman',
+    category: 'Kebersihan',
+    frequency: 'Mingguan',
+    checked: false 
+  },
+  { 
+    id: 10, 
+    title: 'Ikut Fogging', 
+    description: 'Berpartisipasi dalam kegiatan fogging jika ada wabah DBD',
+    category: 'Penanganan',
+    frequency: 'Jika perlu',
+    checked: false 
+  },
+];
