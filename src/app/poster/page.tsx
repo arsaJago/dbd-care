@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { Download, X, Search } from 'lucide-react';
+import SequentialNav from '@/components/SequentialNav';
 
 // Placeholder posters with Unsplash images
 const placeholderPosters = [
@@ -134,7 +135,7 @@ export default function PosterPage() {
                     placeholder="Cari poster..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none bg-white text-gray-900 placeholder-gray-400"
                   />
                 </div>
 
@@ -200,6 +201,8 @@ export default function PosterPage() {
                 <p className="text-gray-600 text-lg">Tidak ada poster ditemukan</p>
               </div>
             )}
+            {/* Flow Navigation - Step 2 -> Video */}
+            <SequentialNav step={2} total={5} nextHref="/video" nextLabel="Video" variant="green" />
           </div>
         </div>
       </main>

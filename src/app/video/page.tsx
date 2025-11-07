@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { Play, X, Search, Eye } from 'lucide-react';
+import SequentialNav from '@/components/SequentialNav';
 import { extractYouTubeId } from '@/lib/utils';
 
 // Placeholder videos - pakai video YouTube sebenarnya tentang DBD
@@ -145,7 +146,7 @@ export default function VideoPage() {
                     placeholder="Cari video..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none bg-white text-gray-900 placeholder-gray-400"
                   />
                 </div>
 
@@ -220,6 +221,8 @@ export default function VideoPage() {
                 <p className="text-gray-600 text-lg">Tidak ada video ditemukan</p>
               </div>
             )}
+            {/* Flow Navigation - Step 3 -> Quiz */}
+            <SequentialNav step={3} total={5} nextHref="/quiz" nextLabel="Quiz" variant="red" />
           </div>
         </div>
       </main>

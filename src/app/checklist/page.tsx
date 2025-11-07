@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { CheckCircle2, Circle, Trophy, RefreshCw } from 'lucide-react';
 import { checklistItems } from '@/lib/data';
+import SequentialNav from '@/components/SequentialNav';
 
 export default function ChecklistPage() {
   const router = useRouter();
@@ -192,6 +193,9 @@ export default function ChecklistPage() {
                 </p>
               </div>
             )}
+
+            {/* Flow Navigation - Step 5 -> Beranda */}
+            <SequentialNav step={5} total={5} nextHref="/beranda" nextLabel="Beranda" variant="purple" className="mb-12" />
           </div>
         </div>
       </main>

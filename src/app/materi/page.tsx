@@ -108,7 +108,7 @@ export default function MateriPage() {
                 placeholder="Cari materi..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
+                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none bg-white text-gray-900 placeholder-gray-400"
               />
             </div>
 
@@ -143,6 +143,18 @@ export default function MateriPage() {
             <p className="text-gray-600 text-lg">Tidak ada materi ditemukan</p>
           </div>
         )}
+
+        {/* Flow Navigation - Step 1 -> Poster */}
+        <div className="mt-12 flex flex-col items-center">
+          <div className="text-sm text-gray-500 mb-3">Langkah 1 dari 5</div>
+          <button
+            onClick={() => router.push('/poster')}
+            className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-green-600 hover:bg-green-700 text-white font-semibold shadow transition"
+          >
+            Lanjut ke Poster
+            <span className="inline-block">➡️</span>
+          </button>
+        </div>
       </div>
     </div>
   );
