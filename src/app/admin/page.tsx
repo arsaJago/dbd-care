@@ -12,7 +12,8 @@ import {
   Upload,
   TrendingUp,
   Eye,
-  Download
+  Download,
+  Trophy
 } from 'lucide-react';
 import { db } from '@/lib/firebase';
 import { collection, getDocs, query, orderBy, limit } from 'firebase/firestore';
@@ -203,29 +204,61 @@ export default function AdminDashboard() {
               ))}
             </div>
 
-            {/* Upload Menus */}
+            {/* Quick Actions */}
             <div className="mb-8">
               <h2 className="text-2xl font-bold text-gray-800 mb-6">
-                Upload Konten
+                Quick Actions
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                {/* Upload Menus */}
                 {uploadMenus.map((menu, index) => (
                   <button
                     key={index}
                     onClick={() => router.push(menu.href)}
-                    className="group bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 p-6 text-left border-2 border-transparent hover:border-indigo-500"
+                    className="group bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 p-4 text-left border-2 border-transparent hover:border-indigo-500"
                   >
-                    <div className={`${menu.color} rounded-lg p-4 w-fit mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                      <menu.icon className="w-8 h-8 text-white" />
+                    <div className={`${menu.color} rounded-lg p-3 w-fit mb-3 group-hover:scale-110 transition-transform duration-300`}>
+                      <menu.icon className="w-6 h-6 text-white" />
                     </div>
-                    <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-indigo-600 transition-colors">
+                    <h3 className="text-lg font-bold text-gray-800 mb-1 group-hover:text-indigo-600 transition-colors">
                       {menu.title}
                     </h3>
-                    <p className="text-gray-600">
+                    <p className="text-sm text-gray-600">
                       {menu.description}
                     </p>
                   </button>
                 ))}
+                
+                {/* New Management Menus */}
+                <button
+                  onClick={() => router.push('/admin/quiz-results')}
+                  className="group bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 p-4 text-left border-2 border-transparent hover:border-yellow-500"
+                >
+                  <div className="bg-yellow-500 rounded-lg p-3 w-fit mb-3 group-hover:scale-110 transition-transform duration-300">
+                    <Trophy className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-800 mb-1 group-hover:text-yellow-600 transition-colors">
+                    Hasil Quiz
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    Lihat & kelola hasil quiz
+                  </p>
+                </button>
+
+                <button
+                  onClick={() => router.push('/admin/analytics')}
+                  className="group bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 p-4 text-left border-2 border-transparent hover:border-emerald-500"
+                >
+                  <div className="bg-emerald-500 rounded-lg p-3 w-fit mb-3 group-hover:scale-110 transition-transform duration-300">
+                    <TrendingUp className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-800 mb-1 group-hover:text-emerald-600 transition-colors">
+                    Analytics
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    Monitor aktivitas user
+                  </p>
+                </button>
               </div>
             </div>
 

@@ -8,10 +8,12 @@ import { db } from '@/lib/firebase';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import MaterialCard from '@/components/MaterialCard';
 import { Material } from '@/types';
+import { useActivityTracker } from '@/lib/activityTracker';
 
 export default function MateriPage() {
   const { isAuthenticated, loading } = useAuth();
   const router = useRouter();
+  const activityTracker = useActivityTracker();
   const [materials, setMaterials] = useState<Material[]>([]);
   const [filteredMaterials, setFilteredMaterials] = useState<Material[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -29,6 +31,8 @@ export default function MateriPage() {
   useEffect(() => {
     if (isAuthenticated) {
       fetchMaterials();
+      // Log page visit
+      activityTracker.logPageVisit('materi');
     }
   }, [isAuthenticated]);
 
