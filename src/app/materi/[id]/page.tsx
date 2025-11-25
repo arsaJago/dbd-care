@@ -88,8 +88,7 @@ export default function MaterialDetailPage() {
     try {
       const q = query(
         collection(db, 'comments'),
-        where('materialId', '==', params.id),
-        orderBy('createdAt', 'desc')
+        where('materialId', '==', params.id)
       );
       const querySnapshot = await getDocs(q);
       const commentsData: Comment[] = [];

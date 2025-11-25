@@ -26,7 +26,7 @@ interface QuizResponse {
 
 export default function QuizResultsPage() {
   const router = useRouter();
-  const { isAuthenticated, isAdmin } = useAuth();
+  const { isAdmin } = useAuth();
   const [quizResponses, setQuizResponses] = useState<QuizResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedResponse, setExpandedResponse] = useState<string | null>(null);
@@ -39,14 +39,8 @@ export default function QuizResultsPage() {
   });
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      router.push('/login');
-    } else if (!isAdmin) {
-      router.push('/beranda');
-    } else {
-      fetchQuizResponses();
-    }
-  }, [isAuthenticated, isAdmin, router]);
+    if (!isAdmin) {      router.push('/login');    } else {      fetchQuizResponses();    }
+  }, [isAdmin, router]);
 
   const fetchQuizResponses = async () => {
     try {

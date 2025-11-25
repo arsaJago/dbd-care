@@ -9,7 +9,7 @@ import { collection, addDoc, Timestamp } from 'firebase/firestore';
 
 export default function UploadPosterPage() {
   const router = useRouter();
-  const { isAuthenticated, isAdmin } = useAuth();
+  const { isAdmin } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
@@ -21,12 +21,8 @@ export default function UploadPosterPage() {
   });
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      router.push('/login');
-    } else if (!isAdmin) {
-      router.push('/beranda');
-    }
-  }, [isAuthenticated, isAdmin, router]);
+    if (!isAdmin) {      router.push('/login');    }
+  }, [isAdmin, router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({
@@ -258,3 +254,4 @@ export default function UploadPosterPage() {
     </div>
   );
 }
+

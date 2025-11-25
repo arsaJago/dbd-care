@@ -6,82 +6,54 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Play, X, Search, Eye } from 'lucide-react';
 import SequentialNav from '@/components/SequentialNav';
 import { extractYouTubeId } from '@/lib/utils';
-
-// Placeholder videos - pakai video YouTube sebenarnya tentang DBD
-const placeholderVideos = [
-  {
-    id: '1',
-    title: 'Apa Itu Demam Berdarah Dengue (DBD)?',
-    category: 'Pengenalan',
-    youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-    duration: '5:24',
-    views: 1243,
-    description: 'Pengenalan lengkap tentang penyakit DBD dan cara penularannya',
-  },
-  {
-    id: '2',
-    title: 'Gerakan 3M Plus Cegah DBD',
-    category: 'Pencegahan',
-    youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-    duration: '4:12',
-    views: 892,
-    description: 'Tutorial praktis melakukan 3M Plus di rumah Anda',
-  },
-  {
-    id: '3',
-    title: 'Kenali Gejala DBD Sejak Dini',
-    category: 'Gejala',
-    youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-    duration: '6:45',
-    views: 1567,
-    description: 'Pelajari gejala DBD agar bisa segera ditangani',
-  },
-  {
-    id: '4',
-    title: 'Cara Merawat Penderita DBD di Rumah',
-    category: 'Perawatan',
-    youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-    duration: '8:30',
-    views: 743,
-    description: 'Tips merawat anggota keluarga yang terkena DBD',
-  },
-  {
-    id: '5',
-    title: 'Fogging: Kapan dan Bagaimana?',
-    category: 'Penanganan',
-    youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-    duration: '3:56',
-    views: 654,
-    description: 'Mengenal proses fogging untuk memberantas nyamuk DBD',
-  },
-  {
-    id: '6',
-    title: 'Nyamuk Aedes Aegypti: Musuh Utama Kita',
-    category: 'Edukasi',
-    youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-    duration: '7:20',
-    views: 1089,
-    description: 'Mengenal karakteristik dan habitat nyamuk penyebab DBD',
-  },
-];
+import { db } from '@/lib/firebase';
+import { collection, getDocs, doc, updateDoc, increment } from 'firebase/firestore';
+import { Video } from '@/types';
 
 export default function VideoPage() {
   const router = useRouter();
   const { isAuthenticated } = useAuth();
-  const [videos, setVideos] = useState(placeholderVideos);
-  const [filteredVideos, setFilteredVideos] = useState(placeholderVideos);
-  const [selectedVideo, setSelectedVideo] = useState<any>(null);
+  const [videos, setVideos] = useState<Video[]>([]);
+  const [filteredVideos, setFilteredVideos] = useState<Video[]>([]);
+  const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Semua');
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (!isAuthenticated) {
       router.push('/login');
+    } else {
+      fetchVideos();
     }
   }, [isAuthenticated, router]);
 
+  const fetchVideos = async () => {
+    try {
+      setIsLoading(true);
+      const querySnapshot = await getDocs(collection(db, 'videos'));
+      const videosData: Video[] = [];
+
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        videosData.push({
+          id: doc.id,
+          ...data,
+          category: data.category || 'Lainnya',
+        } as Video & { category?: string });
+      });
+
+      setVideos(videosData);
+      setFilteredVideos(videosData);
+    } catch (error) {
+      console.error('Error fetching videos:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    let result = videos;
+    let result = (videos as (Video & { category?: string })[]);
 
     // Filter by category
     if (selectedCategory !== 'Semua') {
@@ -98,23 +70,43 @@ export default function VideoPage() {
     setFilteredVideos(result);
   }, [searchQuery, selectedCategory, videos]);
 
-  const categories = ['Semua', ...Array.from(new Set(videos.map(v => v.category)))];
+  const categories = ['Semua', ...Array.from(new Set((videos as (Video & { category?: string })[]).map(v => v.category || 'Lainnya')))];
 
-  const handlePlayVideo = (video: any) => {
+  const handlePlayVideo = async (video: Video) => {
     setSelectedVideo(video);
     
-    // Update view count
-    setVideos(prev =>
-      prev.map(v =>
-        v.id === video.id ? { ...v, views: v.views + 1 } : v
-      )
-    );
+    // Update view count in Firebase
+    try {
+      const videoRef = doc(db, 'videos', video.id);
+      await updateDoc(videoRef, {
+        views: increment(1)
+      });
+      
+      // Update local state
+      setVideos(prev =>
+        prev.map(v =>
+          v.id === video.id ? { ...v, views: v.views + 1 } : v
+        )
+      );
+    } catch (error) {
+      console.error('Error updating views:', error);
+    }
   };
 
-  const getYouTubeThumbnail = (youtubeUrl: string) => {
-    const videoId = extractYouTubeId(youtubeUrl);
-    return `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+  const getYouTubeThumbnail = (youtubeId: string) => {
+    return `https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg`;
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 pt-16">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-green-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading videos...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 pt-16">
@@ -180,7 +172,7 @@ export default function VideoPage() {
                   >
                     <div className="relative aspect-video overflow-hidden">
                       <img
-                        src={getYouTubeThumbnail(video.youtubeUrl)}
+                        src={getYouTubeThumbnail(video.youtubeId)}
                         alt={video.title}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                       />
@@ -200,7 +192,7 @@ export default function VideoPage() {
 
                     <div className="p-4">
                       <span className="inline-block text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full mb-2">
-                        {video.category}
+                        {(video as Video & { category?: string }).category}
                       </span>
                       <h3 className="text-lg font-bold text-gray-800 mb-2 line-clamp-2">
                         {video.title}
@@ -247,7 +239,7 @@ export default function VideoPage() {
                 <iframe
                   width="100%"
                   height="100%"
-                  src={`https://www.youtube.com/embed/${extractYouTubeId(selectedVideo.youtubeUrl)}?autoplay=1`}
+                  src={`https://www.youtube.com/embed/${selectedVideo.youtubeId}?autoplay=1`}
                   title={selectedVideo.title}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
@@ -257,8 +249,8 @@ export default function VideoPage() {
               
               {/* Video Info */}
               <div className="p-6">
-                <span className="inline-block text-sm bg-red-100 text-red-700 px-3 py-1 rounded-full mb-3">
-                  {selectedVideo.category}
+                <span className="inline-block text-sm bg-red-100 text-red-700 px-3 py-1 rounded-full mb-4">
+                  {(selectedVideo as Video & { category?: string }).category}
                 </span>
                 <h2 className="text-2xl font-bold text-gray-800 mb-2">
                   {selectedVideo.title}

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Search, Filter } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { db } from '@/lib/firebase';
-import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+import { collection, getDocs } from 'firebase/firestore';
 import MaterialCard from '@/components/MaterialCard';
 import { Material } from '@/types';
 import { useActivityTracker } from '@/lib/activityTracker';
@@ -43,8 +43,7 @@ export default function MateriPage() {
   const fetchMaterials = async () => {
     try {
       setIsLoading(true);
-      const q = query(collection(db, 'materials'), orderBy('createdAt', 'desc'));
-      const querySnapshot = await getDocs(q);
+      const querySnapshot = await getDocs(collection(db, 'materials'));
       const materialsData: Material[] = [];
 
       querySnapshot.forEach((doc) => {

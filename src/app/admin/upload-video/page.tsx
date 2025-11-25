@@ -10,7 +10,7 @@ import { extractYouTubeId } from '@/lib/utils';
 
 export default function UploadVideoPage() {
   const router = useRouter();
-  const { isAuthenticated, isAdmin } = useAuth();
+  const { isAdmin } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
@@ -24,12 +24,8 @@ export default function UploadVideoPage() {
   const [videoId, setVideoId] = useState('');
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      router.push('/login');
-    } else if (!isAdmin) {
-      router.push('/beranda');
-    }
-  }, [isAuthenticated, isAdmin, router]);
+    if (!isAdmin) {      router.push('/login');    }
+  }, [isAdmin, router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -300,3 +296,4 @@ export default function UploadVideoPage() {
     </div>
   );
 }
+

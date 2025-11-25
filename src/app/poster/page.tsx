@@ -61,12 +61,39 @@ const placeholderPosters = [
 export default function PosterPage() {
   const router = useRouter();
   const { isAuthenticated } = useAuth();
-  const [posters, setPosters] = useState(placeholderPosters);
-  const [filteredPosters, setFilteredPosters] = useState(placeholderPosters);
+  const [posters, setPosters] = useState<any[]>([]);
+  const [filteredPosters, setFilteredPosters] = useState<any[]>([]);
   const [selectedPoster, setSelectedPoster] = useState<any>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Semua');
+  const [isLoading, setIsLoading] = useState(true);
 
+  useEffect(() => {
+    if (!isAuthenticated) {
+      router.push('/login');
+    } else {
+      fetchPosters();
+    }
+  }, [isAuthenticated, router]);
+
+  const fetchPosters = async () => {
+    try {
+      setIsLoading(true);
+      const { db } = await import('@/lib/firebase');
+      const { collection, getDocs } = await import('firebase/firestore');
+      const querySnapshot = await getDocs(collection(db, 'posters'));
+      const postersData: any[] = [];
+      querySnapshot.forEach((doc) => {
+        postersData.push({ id: doc.id, ...doc.data() });
+      });
+      setPosters(postersData);
+      setFilteredPosters(postersData);
+    } catch (error) {
+      console.error('Error fetching posters:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
   useEffect(() => {
     if (!isAuthenticated) {
       router.push('/login');
@@ -111,14 +138,10 @@ export default function PosterPage() {
         {/* Header Section */}
         <section className="bg-gradient-to-r from-green-600 to-green-800 text-white py-12">
           <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto text-center">
-              <h1 className="text-3xl md:text-4xl font-bold mb-4">
-                Poster Edukasi DBD
-              </h1>
-              <p className="text-lg text-green-100">
-                Download dan bagikan poster edukasi untuk mencegah DBD di lingkungan Anda
-              </p>
-            </div>
+            <h1 className="text-3xl md:text-4xl font-bold mb-4">Poster Edukasi DBD</h1>
+            <p className="text-lg text-green-100">
+              Download dan bagikan poster edukasi untuk mencegah DBD di lingkungan Anda
+            </p>
           </div>
         </section>
 
@@ -169,7 +192,7 @@ export default function PosterPage() {
                   >
                     <div className="relative aspect-[3/4] overflow-hidden">
                       <img
-                        src={poster.imageUrl}
+                        src={poster.fileUrl || poster.imageUrl}
                         alt={poster.title}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                       />
@@ -224,7 +247,7 @@ export default function PosterPage() {
             <div className="bg-white rounded-xl overflow-hidden">
               <div className="max-h-[70vh] overflow-y-auto">
                 <img
-                  src={selectedPoster.imageUrl}
+                  src={selectedPoster.fileUrl || selectedPoster.imageUrl}
                   alt={selectedPoster.title}
                   className="w-full"
                 />
