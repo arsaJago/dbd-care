@@ -59,6 +59,33 @@ const placeholderPosters = [
 ];
 
 export default function PosterPage() {
+    // Helper to extract Google Drive FILE_ID and build direct link
+    function getDriveFileId(url: string) {
+      // Support /file/d/FILE_ID and /open?id=FILE_ID
+      const match = url.match(/\/file\/d\/([\w-]+)/);
+      if (match) return match[1];
+      const idMatch = url.match(/[?&]id=([\w-]+)/);
+      if (idMatch) return idMatch[1];
+      return '';
+    }
+
+    function getPosterImageUrl(url: string) {
+      if (!url) return 'https://via.placeholder.com/600x800?text=No+Poster';
+      if (url.includes('drive.google.com')) {
+        const fileId = getDriveFileId(url);
+        return fileId ? `https://drive.google.com/uc?export=view&id=${fileId}` : url;
+      }
+      return url;
+    }
+
+    function getPosterDownloadUrl(url: string) {
+      if (!url) return '#';
+      if (url.includes('drive.google.com')) {
+        const fileId = getDriveFileId(url);
+        return fileId ? `https://drive.google.com/uc?export=download&id=${fileId}` : url;
+      }
+      return url;
+    }
   const router = useRouter();
   const { isAuthenticated } = useAuth();
   const [posters, setPosters] = useState<any[]>([]);
@@ -184,40 +211,50 @@ export default function PosterPage() {
             {/* Poster Grid */}
             {filteredPosters.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredPosters.map((poster) => (
-                  <div
-                    key={poster.id}
-                    className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group cursor-pointer"
-                    onClick={() => setSelectedPoster(poster)}
-                  >
-                    <div className="relative aspect-[3/4] overflow-hidden">
+                {filteredPosters.map((poster) => {
+                  const imageUrl = getPosterImageUrl(poster.fileUrl || poster.imageUrl);
+                  const downloadUrl = getPosterDownloadUrl(poster.fileUrl || poster.imageUrl);
+                  return (
+                    <div
+                      key={poster.id}
+                      className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-visible group cursor-pointer"
+                      onClick={() => setSelectedPoster(poster)}
+                    >
                       <img
-                        src={poster.fileUrl || poster.imageUrl}
+                        src={imageUrl}
                         alt={poster.title}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                        className="w-full h-64 object-contain bg-gray-100 border border-red-400"
+                        onError={(e) => { e.currentTarget.src = 'https://via.placeholder.com/400x300?text=Invalid+Image+URL'; }}
                       />
-                      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
-                        <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          <button className="bg-white text-green-600 px-4 py-2 rounded-lg font-semibold flex items-center space-x-2">
-                            <Download className="w-5 h-5" />
-                            <span>Download</span>
-                          </button>
+                      <div className="p-4">
+                        <span className="inline-block text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full mb-2">
+                          {poster.category}
+                        </span>
+                        <h3 className="text-lg font-bold text-gray-800 mb-2">
+                          {poster.title}
+                        </h3>
+                        <div className="flex items-center justify-between text-sm text-gray-600">
+                          <span>{poster.downloads} downloads</span>
                         </div>
+                        <a
+                          href={downloadUrl}
+                          download
+                          className="mt-2 bg-white text-green-600 px-4 py-2 rounded-lg font-semibold flex items-center space-x-2 border border-green-600"
+                          onClick={(e) => {
+                            handleDownload(poster);
+                            if (!downloadUrl || downloadUrl === '#') {
+                              e.preventDefault();
+                              alert('File poster belum tersedia.');
+                            }
+                          }}
+                        >
+                          <Download className="w-5 h-5" />
+                          <span>Download</span>
+                        </a>
                       </div>
                     </div>
-                    <div className="p-4">
-                      <span className="inline-block text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full mb-2">
-                        {poster.category}
-                      </span>
-                      <h3 className="text-lg font-bold text-gray-800 mb-2">
-                        {poster.title}
-                      </h3>
-                      <div className="flex items-center justify-between text-sm text-gray-600">
-                        <span>{poster.downloads} downloads</span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ) : (
               <div className="text-center py-12">
@@ -247,9 +284,10 @@ export default function PosterPage() {
             <div className="bg-white rounded-xl overflow-hidden">
               <div className="max-h-[70vh] overflow-y-auto">
                 <img
-                  src={selectedPoster.fileUrl || selectedPoster.imageUrl}
+                  src={getPosterImageUrl(selectedPoster.fileUrl || selectedPoster.imageUrl)}
                   alt={selectedPoster.title}
                   className="w-full"
+                  onError={(e) => { e.currentTarget.src = 'https://via.placeholder.com/600x800?text=No+Poster'; }}
                 />
               </div>
               <div className="p-6 border-t">
@@ -259,13 +297,22 @@ export default function PosterPage() {
                 <span className="inline-block text-sm bg-green-100 text-green-700 px-3 py-1 rounded-full mb-4">
                   {selectedPoster.category}
                 </span>
-                <button
-                  onClick={() => handleDownload(selectedPoster)}
+                <a
+                  href={getPosterDownloadUrl(selectedPoster.fileUrl || selectedPoster.imageUrl)}
+                  download
                   className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors flex items-center justify-center space-x-2"
+                  onClick={(e) => {
+                    handleDownload(selectedPoster);
+                    const downloadUrl = getPosterDownloadUrl(selectedPoster.fileUrl || selectedPoster.imageUrl);
+                    if (!downloadUrl || downloadUrl === '#') {
+                      e.preventDefault();
+                      alert('File poster belum tersedia.');
+                    }
+                  }}
                 >
                   <Download className="w-5 h-5" />
                   <span>Download Poster</span>
-                </button>
+                </a>
               </div>
             </div>
           </div>

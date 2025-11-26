@@ -8,6 +8,7 @@ import { db } from '@/lib/firebase';
 import { doc, getDoc, updateDoc, increment, collection, addDoc, query, where, orderBy, getDocs, Timestamp } from 'firebase/firestore';
 import { Material, Comment } from '@/types';
 import { formatDate, formatDateTime } from '@/lib/utils';
+import ReactMarkdown from 'react-markdown';
 import MaterialCard from '@/components/MaterialCard';
 
 export default function MaterialDetailPage() {
@@ -196,10 +197,9 @@ export default function MaterialDetailPage() {
             </div>
 
             {/* Content */}
-            <div
-              className="prose max-w-none text-gray-700 leading-relaxed"
-              dangerouslySetInnerHTML={{ __html: material.content }}
-            />
+            <div className="prose max-w-none text-gray-700 leading-relaxed">
+              <ReactMarkdown>{material.content}</ReactMarkdown>
+            </div>
           </div>
         </article>
 

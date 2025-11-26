@@ -75,6 +75,8 @@ export default function EditPosterPage() {
         category: formData.category,
         fileUrl: formData.fileUrl,
         fileType: formData.fileType,
+        imageUrl: formData.fileUrl,
+        downloadUrl: formData.fileUrl,
       });
 
       alert('Poster berhasil diupdate!');

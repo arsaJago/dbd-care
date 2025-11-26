@@ -16,7 +16,7 @@ export default function UploadPosterPage() {
   const [formData, setFormData] = useState({
     title: '',
     category: 'Gejala',
-    imageUrl: '',
+    fileUrl: '', // gunakan fileUrl sebagai sumber utama
     downloadUrl: '',
   });
 
@@ -39,7 +39,7 @@ export default function UploadPosterPage() {
 
     try {
       // Validation
-      if (!formData.title || !formData.imageUrl) {
+      if (!formData.title || !formData.fileUrl) {
         throw new Error('Judul dan URL gambar wajib diisi');
       }
 
@@ -47,8 +47,8 @@ export default function UploadPosterPage() {
       await addDoc(collection(db, 'posters'), {
         title: formData.title,
         category: formData.category,
-        imageUrl: formData.imageUrl,
-        downloadUrl: formData.downloadUrl || formData.imageUrl,
+        fileUrl: formData.fileUrl,
+        downloadUrl: formData.downloadUrl || formData.fileUrl,
         downloads: 0,
         createdAt: Timestamp.now(),
       });
@@ -57,7 +57,7 @@ export default function UploadPosterPage() {
       setFormData({
         title: '',
         category: 'Gejala',
-        imageUrl: '',
+        fileUrl: '',
         downloadUrl: '',
       });
 
@@ -152,8 +152,8 @@ export default function UploadPosterPage() {
                   </label>
                   <input
                     type="url"
-                    name="imageUrl"
-                    value={formData.imageUrl}
+                    name="fileUrl"
+                    value={formData.fileUrl}
                     onChange={handleChange}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     placeholder="https://i.ibb.co/xxxxx/poster.jpg"
@@ -183,14 +183,14 @@ export default function UploadPosterPage() {
                 </div>
 
                 {/* Preview */}
-                {formData.imageUrl && (
+                {formData.fileUrl && (
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Preview
                     </label>
                     <div className="border border-gray-300 rounded-lg p-4 bg-gray-50">
                       <img
-                        src={formData.imageUrl}
+                        src={formData.fileUrl}
                         alt="Preview"
                         className="max-w-full h-auto max-h-96 mx-auto rounded-lg"
                         onError={(e) => {
