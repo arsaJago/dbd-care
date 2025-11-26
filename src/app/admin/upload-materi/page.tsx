@@ -111,7 +111,7 @@ export default function UploadMateriPage() {
                     name="title"
                     value={formData.title}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
                     placeholder="Contoh: Mengenal Gejala DBD"
                     required
                   />
@@ -126,7 +126,7 @@ export default function UploadMateriPage() {
                     name="category"
                     value={formData.category}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
                     required
                   >
                     <option value="Gejala">Gejala</option>
@@ -146,7 +146,7 @@ export default function UploadMateriPage() {
                     name="thumbnailUrl"
                     value={formData.thumbnailUrl}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
                     placeholder="https://example.com/image.jpg"
                   />
                   <p className="text-sm text-gray-500 mt-1">
@@ -164,7 +164,7 @@ export default function UploadMateriPage() {
                     value={formData.excerpt}
                     onChange={handleChange}
                     rows={3}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
                     placeholder="Ringkasan singkat materi (max 150 karakter)"
                     maxLength={150}
                     required
