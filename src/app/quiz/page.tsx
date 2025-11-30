@@ -202,7 +202,7 @@ export default function QuizPage() {
 
             {/* Options */}
             <div className="space-y-3">
-              {question.options.map((option, index) => (
+              {(question.options as string[]).map((option: string, index: number) => (
                 <button
                   key={index}
                   onClick={() => handleSelectAnswer(index)}
