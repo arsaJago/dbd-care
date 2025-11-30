@@ -61,6 +61,7 @@ export default function EditQuizPage() {
         await setDoc(quizRef, { questions });
       }
       alert("Quiz berhasil diperbarui!");
+      router.push("/admin/manage-content");
     } catch (error) {
       alert("Gagal menyimpan quiz!");
     } finally {
