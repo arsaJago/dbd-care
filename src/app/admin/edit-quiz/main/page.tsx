@@ -41,7 +41,7 @@ export default function EditQuizPage() {
     }
   };
 
-  const handleChange = (index: number, field: string, value: string | number) => {
+  const handleChange = (index: number, field: string, value: string | number | string[]) => {
     setQuestions((prev) => {
       const updated = [...prev];
       updated[index] = { ...updated[index], [field]: value };
