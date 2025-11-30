@@ -18,17 +18,13 @@ export default function BerandaPage() {
   const [videos, setVideos] = useState<VideoType[]>([]);
   const [readCount, setReadCount] = useState(0);
 
-  useEffect(() => {
-    if (!loading && !isAuthenticated) {
-      router.push('/login');
-    }
-  }, [isAuthenticated, loading, router]);
+  // Halaman beranda bisa diakses tanpa login
 
   useEffect(() => {
+    fetchLatestMaterials();
+    fetchPopularVideos();
+    // In a real app, track user's read materials jika login
     if (isAuthenticated) {
-      fetchLatestMaterials();
-      fetchPopularVideos();
-      // In a real app, track user's read materials
       setReadCount(0);
     }
   }, [isAuthenticated]);
@@ -120,7 +116,7 @@ export default function BerandaPage() {
       <section className="bg-gradient-to-r from-green-500 to-blue-500 text-white py-12 px-4">
         <div className="container mx-auto">
           <h1 className="text-3xl md:text-4xl font-bold mb-2">
-            Halo, {user?.username}! 👋
+            Halo, {user?.username || ''}! 👋
           </h1>
           <p className="text-lg text-white/90">
             Selamat datang di DBD Care. Mari belajar bersama mencegah DBD!

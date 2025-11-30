@@ -19,11 +19,7 @@ export default function QuizPage() {
   const [score, setScore] = useState(0);
   const [showExplanation, setShowExplanation] = useState(false);
 
-  useEffect(() => {
-    if (!loading && !isAuthenticated) {
-      router.push('/login');
-    }
-  }, [isAuthenticated, loading, router]);
+  // Halaman quiz bisa diakses tanpa login
 
   const startQuiz = () => {
     setQuizState('quiz');

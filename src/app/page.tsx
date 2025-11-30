@@ -38,13 +38,9 @@ export default function HomePage() {
   });
 
   useEffect(() => {
-    if (isAuthenticated) {
-      router.push('/beranda');
-    } else {
-      fetchStats();
-      fetchLatestMaterials();
-    }
-  }, [isAuthenticated, router]);
+    fetchStats();
+    fetchLatestMaterials();
+  }, []);
 
   const fetchStats = async () => {
     try {
@@ -127,16 +123,10 @@ export default function HomePage() {
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
-              href="/register"
+              href="/beranda"
               className="px-8 py-4 bg-white text-green-600 font-bold rounded-lg hover:bg-gray-100 transition text-lg shadow-xl"
             >
               Mulai Belajar
-            </Link>
-            <Link
-              href="/login"
-              className="px-8 py-4 bg-transparent border-2 border-white text-white font-bold rounded-lg hover:bg-white hover:text-green-600 transition text-lg"
-            >
-              Sudah Punya Akun? Login
             </Link>
           </div>
         </div>
@@ -210,7 +200,7 @@ export default function HomePage() {
             </div>
             <div className="text-center">
               <Link
-                href="/register"
+                href="/materi"
                 className="inline-block px-8 py-3 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition"
               >
                 Lihat Semua Materi

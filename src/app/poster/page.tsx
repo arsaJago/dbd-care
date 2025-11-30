@@ -96,12 +96,8 @@ export default function PosterPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      router.push('/login');
-    } else {
-      fetchPosters();
-    }
-  }, [isAuthenticated, router]);
+    fetchPosters();
+  }, []);
 
   const fetchPosters = async () => {
     try {
@@ -121,11 +117,7 @@ export default function PosterPage() {
       setIsLoading(false);
     }
   };
-  useEffect(() => {
-    if (!isAuthenticated) {
-      router.push('/login');
-    }
-  }, [isAuthenticated, router]);
+  // Hilangkan redirect ke login agar poster bisa diakses anonymous user
 
   useEffect(() => {
     let result = posters;
@@ -270,51 +262,25 @@ export default function PosterPage() {
       {/* Modal Preview */}
       {selectedPoster && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 bg-gray-900 bg-opacity-70 backdrop-blur-sm z-50 flex items-center justify-center"
           onClick={() => setSelectedPoster(null)}
         >
-          <div className="relative max-w-4xl w-full" onClick={(e) => e.stopPropagation()}>
+          <div className="relative max-w-2xl w-full mx-4 bg-white rounded-xl shadow-2xl flex flex-col items-center p-6" onClick={(e) => e.stopPropagation()}>
             <button
               onClick={() => setSelectedPoster(null)}
-              className="absolute -top-12 right-0 text-white hover:text-gray-300 transition-colors"
+              className="absolute top-4 right-4 text-gray-600 hover:text-gray-900 transition-colors z-10"
             >
               <X className="w-8 h-8" />
             </button>
-            
-            <div className="bg-white rounded-xl overflow-hidden">
-              <div className="max-h-[70vh] overflow-y-auto">
-                <img
-                  src={getPosterImageUrl(selectedPoster.fileUrl || selectedPoster.imageUrl)}
-                  alt={selectedPoster.title}
-                  className="w-full"
-                  onError={(e) => { e.currentTarget.src = 'https://via.placeholder.com/600x800?text=No+Poster'; }}
-                />
-              </div>
-              <div className="p-6 border-t">
-                <h2 className="text-2xl font-bold text-gray-800 mb-2">
-                  {selectedPoster.title}
-                </h2>
-                <span className="inline-block text-sm bg-green-100 text-green-700 px-3 py-1 rounded-full mb-4">
-                  {selectedPoster.category}
-                </span>
-                <a
-                  href={getPosterDownloadUrl(selectedPoster.fileUrl || selectedPoster.imageUrl)}
-                  download
-                  className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors flex items-center justify-center space-x-2"
-                  onClick={(e) => {
-                    handleDownload(selectedPoster);
-                    const downloadUrl = getPosterDownloadUrl(selectedPoster.fileUrl || selectedPoster.imageUrl);
-                    if (!downloadUrl || downloadUrl === '#') {
-                      e.preventDefault();
-                      alert('File poster belum tersedia.');
-                    }
-                  }}
-                >
-                  <Download className="w-5 h-5" />
-                  <span>Download Poster</span>
-                </a>
-              </div>
-            </div>
+            <h2 className="text-2xl font-bold text-gray-800 mb-2 text-center">{selectedPoster.title}</h2>
+            <span className="inline-block text-sm bg-green-100 text-green-700 px-3 py-1 rounded-full mb-4">{selectedPoster.category}</span>
+            <img
+              src={getPosterImageUrl(selectedPoster.fileUrl || selectedPoster.imageUrl)}
+              alt={selectedPoster.title}
+              className="w-full max-h-[70vh] object-contain rounded-lg border"
+              style={{ background: 'white' }}
+              onError={(e) => { e.currentTarget.src = 'https://via.placeholder.com/600x800?text=No+Poster'; }}
+            />
           </div>
         </div>
       )}

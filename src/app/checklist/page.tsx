@@ -14,18 +14,14 @@ export default function ChecklistPage() {
   const [showConfetti, setShowConfetti] = useState(false);
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      router.push('/login');
+    // Load from localStorage
+    const saved = localStorage.getItem('dbd-checklist');
+    if (saved) {
+      setCheckedItems(JSON.parse(saved));
     } else {
-      // Load from localStorage
-      const saved = localStorage.getItem('dbd-checklist');
-      if (saved) {
-        setCheckedItems(JSON.parse(saved));
-      } else {
-        setCheckedItems(new Array(checklistItems.length).fill(false));
-      }
+      setCheckedItems(new Array(checklistItems.length).fill(false));
     }
-  }, [isAuthenticated, router]);
+  }, []);
 
   const handleToggle = (index: number) => {
     const newCheckedItems = [...checkedItems];

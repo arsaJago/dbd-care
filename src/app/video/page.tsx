@@ -21,12 +21,8 @@ export default function VideoPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      router.push('/login');
-    } else {
-      fetchVideos();
-    }
-  }, [isAuthenticated, router]);
+    fetchVideos();
+  }, []);
 
   const fetchVideos = async () => {
     try {

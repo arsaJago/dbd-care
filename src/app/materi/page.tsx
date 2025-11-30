@@ -22,16 +22,12 @@ export default function MateriPage() {
 
   const categories = ['Semua', 'Pencegahan', 'Gejala', 'Pengobatan', '3M Plus'];
 
-  useEffect(() => {
-    if (!loading && !isAuthenticated) {
-      router.push('/login');
-    }
-  }, [isAuthenticated, loading, router]);
+  // Halaman materi bisa diakses tanpa login
 
   useEffect(() => {
+    fetchMaterials();
+    // Log page visit hanya jika user login
     if (isAuthenticated) {
-      fetchMaterials();
-      // Log page visit
       activityTracker.logPageVisit('materi');
     }
   }, [isAuthenticated]);
