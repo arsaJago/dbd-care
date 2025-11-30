@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { db } from '@/lib/firebase';
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
-import { BookOpen, FileImage, Video, Edit, Trash2, Eye } from 'lucide-react';
+import { BookOpen, FileImage, Video, Edit, Trash2, Eye, ClipboardCheck } from 'lucide-react';
 import { Material, Poster, Video as VideoType } from '@/types';
 
 export default function ManageContentPage() {
@@ -15,7 +15,8 @@ export default function ManageContentPage() {
   const [posters, setPosters] = useState<Poster[]>([]);
   const [videos, setVideos] = useState<VideoType[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'materi' | 'poster' | 'video'>('materi');
+  const [activeTab, setActiveTab] = useState<'materi' | 'poster' | 'video' | 'quiz'>('materi');
+  const [quizzes, setQuizzes] = useState<any[]>([]);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -30,10 +31,11 @@ export default function ManageContentPage() {
   const fetchAllContent = async () => {
     try {
       setLoading(true);
-      const [materialsSnap, postersSnap, videosSnap] = await Promise.all([
+      const [materialsSnap, postersSnap, videosSnap, quizzesSnap] = await Promise.all([
         getDocs(collection(db, 'materials')),
         getDocs(collection(db, 'posters')),
         getDocs(collection(db, 'videos')),
+        getDocs(collection(db, 'quizzes')),
       ]);
 
       const materialsData = materialsSnap.docs.map(doc => ({
@@ -54,6 +56,7 @@ export default function ManageContentPage() {
       setMaterials(materialsData);
       setPosters(postersData);
       setVideos(videosData);
+      setQuizzes(quizzesSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     } catch (error) {
       console.error('Error fetching content:', error);
       alert('Gagal memuat konten');
@@ -135,15 +138,53 @@ export default function ManageContentPage() {
                 onClick={() => setActiveTab('video')}
                 className={`flex-1 px-6 py-4 font-semibold transition-colors flex items-center justify-center gap-2 ${
                   activeTab === 'video'
-                    ? 'bg-red-500 text-white rounded-tr-xl'
+                    ? 'bg-red-500 text-white'
                     : 'text-gray-600 hover:bg-gray-50'
                 }`}
               >
                 <Video size={20} />
                 Video ({videos.length})
               </button>
+              <button
+                onClick={() => setActiveTab('quiz')}
+                className={`flex-1 px-6 py-4 font-semibold transition-colors flex items-center justify-center gap-2 ${
+                  activeTab === 'quiz'
+                    ? 'bg-purple-500 text-white rounded-tr-xl'
+                    : 'text-gray-600 hover:bg-gray-50'
+                }`}
+              >
+                <ClipboardCheck size={20} />
+                Quiz ({quizzes.length})
+              </button>
             </div>
           </div>
+            {/* Quiz Tab */}
+            {activeTab === 'quiz' && (
+              <>
+                <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-4 flex items-center gap-4">
+                  <div className="flex-grow">
+                    <h3 className="text-lg font-bold text-gray-800 mb-1">
+                      Quiz DBD
+                    </h3>
+                    <p className="text-sm text-gray-600 mb-2">
+                      <span className="inline-block bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs font-semibold mr-2">
+                        Quiz
+                      </span>
+                      <span>{quizzes[0]?.questions ? quizzes[0].questions.length : 0} soal</span>
+                    </p>
+                  </div>
+                  <div className="flex gap-2 flex-shrink-0">
+                    <button
+                      onClick={() => router.push(`/admin/edit-quiz/main`)}
+                      className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
+                    >
+                      <Edit size={16} />
+                      Edit
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
 
           {/* Content List */}
           <div className="space-y-4">

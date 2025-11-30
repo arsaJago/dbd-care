@@ -6,7 +6,8 @@ import { ArrowLeft, ArrowRight, CheckCircle, XCircle, Award, RotateCcw } from 'l
 import { useAuth } from '@/contexts/AuthContext';
 import { db } from '@/lib/firebase';
 import { collection, addDoc, Timestamp } from 'firebase/firestore';
-import { quizQuestions } from '@/lib/data';
+import { quizQuestions as defaultQuestions } from '@/lib/data';
+import { doc, getDoc } from 'firebase/firestore';
 
 type QuizState = 'intro' | 'quiz' | 'result';
 
@@ -15,16 +16,37 @@ export default function QuizPage() {
   const router = useRouter();
   const [quizState, setQuizState] = useState<QuizState>('intro');
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [selectedAnswers, setSelectedAnswers] = useState<number[]>(new Array(quizQuestions.length).fill(-1));
+  const [questions, setQuestions] = useState<any[]>(defaultQuestions);
+  const [selectedAnswers, setSelectedAnswers] = useState<number[]>(new Array(defaultQuestions.length).fill(-1));
   const [score, setScore] = useState(0);
   const [showExplanation, setShowExplanation] = useState(false);
+  useEffect(() => {
+    const fetchQuiz = async () => {
+      try {
+        const docRef = doc(db, 'quizzes', 'main');
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const q = docSnap.data().questions || defaultQuestions;
+          setQuestions(q);
+          setSelectedAnswers(new Array(q.length).fill(-1));
+        } else {
+          setQuestions(defaultQuestions);
+          setSelectedAnswers(new Array(defaultQuestions.length).fill(-1));
+        }
+      } catch (error) {
+        setQuestions(defaultQuestions);
+        setSelectedAnswers(new Array(defaultQuestions.length).fill(-1));
+      }
+    };
+    fetchQuiz();
+  }, []);
 
   // Halaman quiz bisa diakses tanpa login
 
   const startQuiz = () => {
     setQuizState('quiz');
     setCurrentQuestion(0);
-    setSelectedAnswers(new Array(quizQuestions.length).fill(-1));
+    setSelectedAnswers(new Array(questions.length).fill(-1));
     setScore(0);
     setShowExplanation(false);
   };
@@ -36,7 +58,7 @@ export default function QuizPage() {
   };
 
   const handleNext = () => {
-    if (currentQuestion < quizQuestions.length - 1) {
+    if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
       setShowExplanation(false);
     }
@@ -51,7 +73,7 @@ export default function QuizPage() {
 
   const calculateScore = () => {
     let correctCount = 0;
-    quizQuestions.forEach((question, index) => {
+    questions.forEach((question, index) => {
       if (selectedAnswers[index] === question.correctAnswer) {
         correctCount++;
       }
@@ -80,7 +102,7 @@ export default function QuizPage() {
   };
 
   const getScorePercentage = () => {
-    return (score / quizQuestions.length) * 100;
+    return (score / questions.length) * 100;
   };
 
   const getScoreFeedback = () => {
@@ -151,9 +173,9 @@ export default function QuizPage() {
 
   // Quiz State
   if (quizState === 'quiz') {
-    const question = quizQuestions[currentQuestion];
+    const question = questions[currentQuestion];
     const isAnswered = selectedAnswers[currentQuestion] !== -1;
-    const isLastQuestion = currentQuestion === quizQuestions.length - 1;
+    const isLastQuestion = currentQuestion === questions.length - 1;
 
     return (
       <div className="min-h-screen bg-gray-50 py-8 px-4">
@@ -161,13 +183,13 @@ export default function QuizPage() {
           {/* Progress Bar */}
           <div className="mb-6">
             <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
-              <span>Soal {currentQuestion + 1} dari {quizQuestions.length}</span>
-              <span>{Math.round(((currentQuestion + 1) / quizQuestions.length) * 100)}%</span>
+              <span>Soal {currentQuestion + 1} dari {questions.length}</span>
+              <span>{Math.round(((currentQuestion + 1) / questions.length) * 100)}%</span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-3">
               <div
                 className="bg-gradient-to-r from-purple-500 to-pink-500 h-3 rounded-full transition-all duration-300"
-                style={{ width: `${((currentQuestion + 1) / quizQuestions.length) * 100}%` }}
+                style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
               />
             </div>
           </div>
@@ -282,7 +304,7 @@ export default function QuizPage() {
               {feedback.text}
             </h1>
             <p className="text-xl text-gray-600">
-              Skor Anda: {score} dari {quizQuestions.length} ({percentage.toFixed(0)}%)
+              Skor Anda: {score} dari {questions.length} ({percentage.toFixed(0)}%)
             </p>
           </div>
 
@@ -300,7 +322,7 @@ export default function QuizPage() {
           <div className="mb-8">
             <h2 className="text-2xl font-bold text-gray-800 mb-6">Review Jawaban</h2>
             <div className="space-y-4">
-              {quizQuestions.map((question, index) => {
+              {questions.map((question, index) => {
                 const isCorrect = selectedAnswers[index] === question.correctAnswer;
                 return (
                   <div
