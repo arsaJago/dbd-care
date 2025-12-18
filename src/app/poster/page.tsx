@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
-import { Download, X, Search } from 'lucide-react';
+import { X, Search } from 'lucide-react';
 import SequentialNav from '@/components/SequentialNav';
 
 // Placeholder posters with Unsplash images
@@ -78,14 +78,6 @@ export default function PosterPage() {
       return url;
     }
 
-    function getPosterDownloadUrl(url: string) {
-      if (!url) return '#';
-      if (url.includes('drive.google.com')) {
-        const fileId = getDriveFileId(url);
-        return fileId ? `https://drive.google.com/uc?export=download&id=${fileId}` : url;
-      }
-      return url;
-    }
   const router = useRouter();
   const { isAuthenticated } = useAuth();
   const [posters, setPosters] = useState<any[]>([]);
@@ -138,18 +130,6 @@ export default function PosterPage() {
   }, [searchQuery, selectedCategory, posters]);
 
   const categories = ['Semua', ...Array.from(new Set(posters.map(p => p.category)))];
-
-  const handleDownload = (poster: any) => {
-    // Simulate download
-    alert(`Downloading: ${poster.title}\n\nNote: Ini adalah poster placeholder. Admin bisa upload poster asli nanti.`);
-    
-    // Update download count
-    setPosters(prev =>
-      prev.map(p =>
-        p.id === poster.id ? { ...p, downloads: p.downloads + 1 } : p
-      )
-    );
-  };
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 pt-16">
@@ -205,7 +185,6 @@ export default function PosterPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredPosters.map((poster) => {
                   const imageUrl = getPosterImageUrl(poster.fileUrl || poster.imageUrl);
-                  const downloadUrl = getPosterDownloadUrl(poster.fileUrl || poster.imageUrl);
                   return (
                     <div
                       key={poster.id}
@@ -225,24 +204,6 @@ export default function PosterPage() {
                         <h3 className="text-lg font-bold text-gray-800 mb-2">
                           {poster.title}
                         </h3>
-                        <div className="flex items-center justify-between text-sm text-gray-600">
-                          <span>{poster.downloads} downloads</span>
-                        </div>
-                        <a
-                          href={downloadUrl}
-                          download
-                          className="mt-2 bg-white text-green-600 px-4 py-2 rounded-lg font-semibold flex items-center space-x-2 border border-green-600"
-                          onClick={(e) => {
-                            handleDownload(poster);
-                            if (!downloadUrl || downloadUrl === '#') {
-                              e.preventDefault();
-                              alert('File poster belum tersedia.');
-                            }
-                          }}
-                        >
-                          <Download className="w-5 h-5" />
-                          <span>Download</span>
-                        </a>
                       </div>
                     </div>
                   );
@@ -262,25 +223,35 @@ export default function PosterPage() {
       {/* Modal Preview */}
       {selectedPoster && (
         <div
-          className="fixed inset-0 bg-gray-900 bg-opacity-70 backdrop-blur-sm z-50 flex items-center justify-center"
+          className="fixed inset-0 z-50 bg-gray-950 bg-opacity-80 backdrop-blur-sm"
           onClick={() => setSelectedPoster(null)}
         >
-          <div className="relative max-w-2xl w-full mx-4 bg-white rounded-xl shadow-2xl flex flex-col items-center p-6" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="relative flex h-full w-full flex-col overflow-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
             <button
               onClick={() => setSelectedPoster(null)}
-              className="absolute top-4 right-4 text-gray-600 hover:text-gray-900 transition-colors z-10"
+              className="absolute right-6 top-6 rounded-full bg-white/20 p-3 text-white transition hover:bg-white/40"
             >
-              <X className="w-8 h-8" />
+              <X className="h-6 w-6" />
             </button>
-            <h2 className="text-2xl font-bold text-gray-800 mb-2 text-center">{selectedPoster.title}</h2>
-            <span className="inline-block text-sm bg-green-100 text-green-700 px-3 py-1 rounded-full mb-4">{selectedPoster.category}</span>
-            <img
-              src={getPosterImageUrl(selectedPoster.fileUrl || selectedPoster.imageUrl)}
-              alt={selectedPoster.title}
-              className="w-full max-h-[70vh] object-contain rounded-lg border"
-              style={{ background: 'white' }}
-              onError={(e) => { e.currentTarget.src = 'https://via.placeholder.com/600x800?text=No+Poster'; }}
-            />
+            <div className="flex flex-1 flex-col items-center justify-center gap-4 px-0 py-16 md:py-12">
+              <div className="text-center text-white">
+                <h2 className="text-2xl font-semibold md:text-3xl">{selectedPoster.title}</h2>
+                <span className="mt-3 inline-flex items-center rounded-full bg-green-500 px-4 py-1 text-sm font-medium text-white">
+                  {selectedPoster.category}
+                </span>
+              </div>
+              <img
+                src={getPosterImageUrl(selectedPoster.fileUrl || selectedPoster.imageUrl)}
+                alt={selectedPoster.title}
+                className="h-full w-full max-w-5xl object-contain"
+                onError={(e) => {
+                  e.currentTarget.src = 'https://via.placeholder.com/600x800?text=No+Poster';
+                }}
+              />
+            </div>
           </div>
         </div>
       )}

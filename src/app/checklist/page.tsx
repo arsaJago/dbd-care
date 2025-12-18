@@ -1,36 +1,83 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/contexts/AuthContext';
 import { CheckCircle2, Circle, Trophy, RefreshCw } from 'lucide-react';
-import { checklistItems } from '@/lib/data';
+import { defaultChecklistItems } from '@/lib/data';
+import { ChecklistItem } from '@/types';
+import { db } from '@/lib/firebase';
+import { collection, getDocs, orderBy, query } from 'firebase/firestore';
 import SequentialNav from '@/components/SequentialNav';
 
 export default function ChecklistPage() {
-  const router = useRouter();
-  const { isAuthenticated } = useAuth();
-  const [checkedItems, setCheckedItems] = useState<boolean[]>([]);
+  const [checklistItems, setChecklistItems] = useState<ChecklistItem[]>([]);
+  const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
+  const [isLoading, setIsLoading] = useState(true);
   const [showConfetti, setShowConfetti] = useState(false);
 
   useEffect(() => {
-    // Load from localStorage
-    const saved = localStorage.getItem('dbd-checklist');
-    if (saved) {
-      setCheckedItems(JSON.parse(saved));
-    } else {
-      setCheckedItems(new Array(checklistItems.length).fill(false));
-    }
+    const fetchChecklist = async () => {
+      try {
+        const checklistQuery = query(collection(db, 'checklist'), orderBy('order', 'asc'));
+        const snapshot = await getDocs(checklistQuery);
+
+        const items: ChecklistItem[] = snapshot.empty
+          ? defaultChecklistItems
+          : snapshot.docs
+              .map((docSnapshot, index) => {
+                const data = docSnapshot.data() as Record<string, unknown>;
+                return {
+                  id: docSnapshot.id,
+                  title: (data.title as string) || `Checklist ${index + 1}`,
+                  description: (data.description as string) || '',
+                  category: (data.category as string) || 'Lainnya',
+                  frequency: (data.frequency as string) || 'Tidak ditentukan',
+                  order: typeof data.order === 'number' ? (data.order as number) : index + 1,
+                } satisfies ChecklistItem;
+              })
+              .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
+        const saved = localStorage.getItem('dbd-checklist');
+        let savedState: Record<string, boolean> = {};
+        if (saved) {
+          try {
+            savedState = JSON.parse(saved);
+          } catch (error) {
+            console.warn('Gagal membaca progres checklist tersimpan:', error);
+          }
+        }
+
+        const normalized = items.reduce<Record<string, boolean>>((acc, item) => {
+          acc[item.id] = Boolean(savedState[item.id]);
+          return acc;
+        }, {});
+
+        setChecklistItems(items);
+        setCheckedItems(normalized);
+        localStorage.setItem('dbd-checklist', JSON.stringify(normalized));
+      } catch (error) {
+        console.error('Error fetching checklist:', error);
+        const fallbackState = defaultChecklistItems.reduce<Record<string, boolean>>((acc, item) => {
+          acc[item.id] = false;
+          return acc;
+        }, {});
+
+        setChecklistItems(defaultChecklistItems);
+        setCheckedItems(fallbackState);
+        localStorage.setItem('dbd-checklist', JSON.stringify(fallbackState));
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchChecklist();
   }, []);
 
-  const handleToggle = (index: number) => {
-    const newCheckedItems = [...checkedItems];
-    newCheckedItems[index] = !newCheckedItems[index];
-    setCheckedItems(newCheckedItems);
-    localStorage.setItem('dbd-checklist', JSON.stringify(newCheckedItems));
+  const handleToggle = (itemId: string) => {
+    const updated = { ...checkedItems, [itemId]: !checkedItems[itemId] };
+    setCheckedItems(updated);
+    localStorage.setItem('dbd-checklist', JSON.stringify(updated));
 
-    // Check if all items are checked
-    const allChecked = newCheckedItems.every(item => item === true);
+    const allChecked = checklistItems.length > 0 && checklistItems.every(item => updated[item.id]);
     if (allChecked) {
       setShowConfetti(true);
       setTimeout(() => setShowConfetti(false), 3000);
@@ -40,14 +87,28 @@ export default function ChecklistPage() {
   const handleReset = () => {
     const confirmed = window.confirm('Apakah Anda yakin ingin mereset semua checklist?');
     if (confirmed) {
-      const resetItems = new Array(checklistItems.length).fill(false);
-      setCheckedItems(resetItems);
-      localStorage.setItem('dbd-checklist', JSON.stringify(resetItems));
+      const resetState = checklistItems.reduce<Record<string, boolean>>((acc, item) => {
+        acc[item.id] = false;
+        return acc;
+      }, {});
+      setCheckedItems(resetState);
+      localStorage.setItem('dbd-checklist', JSON.stringify(resetState));
     }
   };
 
-  const completedCount = checkedItems.filter(item => item).length;
-  const progressPercentage = (completedCount / checklistItems.length) * 100;
+  const completedCount = checklistItems.reduce((total, item) => (checkedItems[item.id] ? total + 1 : total), 0);
+  const progressPercentage = checklistItems.length > 0 ? (completedCount / checklistItems.length) * 100 : 0;
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 pt-16">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Memuat checklist...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 pt-16">
@@ -89,7 +150,7 @@ export default function ChecklistPage() {
           <div className="max-w-4xl mx-auto">
             {/* Progress Section */}
             <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-between mb-4" aria-live="polite">
                 <div>
                   <h2 className="text-2xl font-bold text-gray-800">
                     Progress Anda
@@ -119,8 +180,10 @@ export default function ChecklistPage() {
                   {progressPercentage.toFixed(0)}% Selesai
                 </span>
                 <button
+                  type="button"
                   onClick={handleReset}
-                  className="text-purple-600 hover:text-purple-700 flex items-center space-x-1 font-medium"
+                  className="text-purple-600 hover:text-purple-700 flex items-center space-x-1 font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:ring-offset-2"
+                  aria-label="Reset checklist"
                 >
                   <RefreshCw className="w-4 h-4" />
                   <span>Reset</span>
@@ -130,47 +193,51 @@ export default function ChecklistPage() {
 
             {/* Checklist Items */}
             <div className="space-y-4">
-              {checklistItems.map((item, index) => (
-                <div
-                  key={index}
-                  className={`bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 p-6 cursor-pointer border-2 ${
-                    checkedItems[index]
-                      ? 'border-purple-500 bg-purple-50'
-                      : 'border-transparent'
-                  }`}
-                  onClick={() => handleToggle(index)}
-                >
-                  <div className="flex items-start space-x-4">
-                    <div className="flex-shrink-0 mt-1">
-                      {checkedItems[index] ? (
-                        <CheckCircle2 className="w-7 h-7 text-purple-600" />
-                      ) : (
-                        <Circle className="w-7 h-7 text-gray-400" />
-                      )}
-                    </div>
-                    <div className="flex-1">
-                      <h3
-                        className={`text-lg font-semibold mb-2 ${
-                          checkedItems[index]
-                            ? 'text-purple-700 line-through'
-                            : 'text-gray-800'
-                        }`}
-                      >
-                        {item.title}
-                      </h3>
-                      <p className="text-gray-600">{item.description}</p>
-                      <div className="mt-3 flex items-center space-x-2">
-                        <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">
-                          {item.category}
-                        </span>
-                        <span className="text-xs text-gray-500">
-                          {item.frequency}
-                        </span>
+              {checklistItems.map((item) => {
+                const isChecked = Boolean(checkedItems[item.id]);
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    className={`block w-full text-left bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 p-6 border-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white ${
+                      isChecked ? 'border-purple-500 bg-purple-50' : 'border-transparent'
+                    }`}
+                    onClick={() => handleToggle(item.id)}
+                    aria-pressed={isChecked}
+                    aria-label={`${isChecked ? 'Batal centang' : 'Centang'} ${item.title}`}
+                  >
+                    <div className="flex items-start space-x-4">
+                      <div className="flex-shrink-0 mt-1">
+                        {isChecked ? (
+                          <CheckCircle2 className="w-7 h-7 text-purple-600" />
+                        ) : (
+                          <Circle className="w-7 h-7 text-gray-400" />
+                        )}
+                      </div>
+                      <div className="flex-1">
+                        <h3
+                          className={`text-lg font-semibold mb-2 ${
+                            isChecked
+                              ? 'text-purple-700 line-through'
+                              : 'text-gray-800'
+                          }`}
+                        >
+                          {item.title}
+                        </h3>
+                        <p className="text-gray-600">{item.description}</p>
+                        <div className="mt-3 flex items-center space-x-2">
+                          <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">
+                            {item.category}
+                          </span>
+                          <span className="text-xs text-gray-500">
+                            {item.frequency}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              ))}
+                  </button>
+                );
+              })}
             </div>
 
             {/* Completion Message */}
@@ -195,6 +262,30 @@ export default function ChecklistPage() {
           </div>
         </div>
       </main>
+
+      <div
+        className="fixed bottom-4 left-1/2 z-40 w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 rounded-full bg-white shadow-lg px-4 py-3 md:hidden"
+        role="status"
+        aria-live="polite"
+      >
+        <div className="flex items-center justify-between gap-3 text-sm text-gray-700">
+          <span className="font-semibold">Progress {progressPercentage.toFixed(0)}%</span>
+          <div
+            className="flex-1 h-2 rounded-full bg-gray-200 overflow-hidden"
+            role="progressbar"
+            aria-label="Kemajuan checklist"
+            aria-valuenow={Number(progressPercentage.toFixed(0))}
+            aria-valuemin={0}
+            aria-valuemax={100}
+          >
+            <div
+              className="h-full bg-gradient-to-r from-purple-500 to-purple-600"
+              style={{ width: `${progressPercentage}%` }}
+              aria-hidden="true"
+            />
+          </div>
+        </div>
+      </div>
 
       <style jsx>{`
         .confetti-container {

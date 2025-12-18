@@ -113,85 +113,85 @@ export const quizQuestions: QuizQuestion[] = [
   },
 ];
 
-export const checklistItems = [
-  { 
-    id: 1, 
-    title: 'Menguras Bak Mandi', 
+export const defaultChecklistItems = [
+  {
+    id: '1',
+    title: 'Menguras Bak Mandi',
     description: 'Kuras bak mandi minimal 1x seminggu untuk mencegah jentik nyamuk',
     category: '3M',
     frequency: 'Mingguan',
-    checked: false 
+    order: 1,
   },
-  { 
-    id: 2, 
-    title: 'Menutup Tempat Penampungan Air', 
+  {
+    id: '2',
+    title: 'Menutup Tempat Penampungan Air',
     description: 'Tutup rapat semua tempat penampungan air seperti tong, ember, dll',
     category: '3M',
     frequency: 'Setiap saat',
-    checked: false 
+    order: 2,
   },
-  { 
-    id: 3, 
-    title: 'Mengubur Barang Bekas', 
+  {
+    id: '3',
+    title: 'Mengubur Barang Bekas',
     description: 'Kubur atau buang barang bekas yang dapat menampung air hujan',
     category: '3M',
     frequency: 'Bulanan',
-    checked: false 
+    order: 3,
   },
-  { 
-    id: 4, 
-    title: 'Gunakan Lotion Anti Nyamuk', 
+  {
+    id: '4',
+    title: 'Gunakan Lotion Anti Nyamuk',
     description: 'Oleskan lotion anti nyamuk terutama saat beraktivitas di luar ruangan',
     category: 'Plus',
     frequency: 'Harian',
-    checked: false 
+    order: 4,
   },
-  { 
-    id: 5, 
-    title: 'Pasang Kawat Kasa', 
+  {
+    id: '5',
+    title: 'Pasang Kawat Kasa',
     description: 'Pasang kawat kasa di ventilasi dan jendela rumah',
     category: 'Plus',
     frequency: 'Permanen',
-    checked: false 
+    order: 5,
   },
-  { 
-    id: 6, 
-    title: 'Tidur dengan Kelambu', 
+  {
+    id: '6',
+    title: 'Tidur dengan Kelambu',
     description: 'Gunakan kelambu saat tidur terutama untuk anak-anak',
     category: 'Plus',
     frequency: 'Harian',
-    checked: false 
+    order: 6,
   },
-  { 
-    id: 7, 
-    title: 'Tanam Pengusir Nyamuk', 
+  {
+    id: '7',
+    title: 'Tanam Pengusir Nyamuk',
     description: 'Tanam lavender, serai, atau zodia di sekitar rumah',
     category: 'Plus',
     frequency: 'Permanen',
-    checked: false 
+    order: 7,
   },
-  { 
-    id: 8, 
-    title: 'Bersihkan Got Rutin', 
+  {
+    id: '8',
+    title: 'Bersihkan Got Rutin',
     description: 'Bersihkan got dan saluran air dari sampah dan genangan',
     category: 'Kebersihan',
     frequency: 'Mingguan',
-    checked: false 
+    order: 8,
   },
-  { 
-    id: 9, 
-    title: 'Cek Pot Tanaman', 
+  {
+    id: '9',
+    title: 'Cek Pot Tanaman',
     description: 'Periksa dan kosongkan genangan air di tatakan pot tanaman',
     category: 'Kebersihan',
     frequency: 'Mingguan',
-    checked: false 
+    order: 9,
   },
-  { 
-    id: 10, 
-    title: 'Ikut Fogging', 
+  {
+    id: '10',
+    title: 'Ikut Fogging',
     description: 'Berpartisipasi dalam kegiatan fogging jika ada wabah DBD',
     category: 'Penanganan',
     frequency: 'Jika perlu',
-    checked: false 
+    order: 10,
   },
 ];

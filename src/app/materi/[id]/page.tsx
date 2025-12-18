@@ -14,7 +14,7 @@ import MaterialCard from '@/components/MaterialCard';
 export default function MaterialDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const { isAuthenticated, user, loading } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const [material, setMaterial] = useState<Material | null>(null);
   const [relatedMaterials, setRelatedMaterials] = useState<Material[]>([]);
   const [comments, setComments] = useState<Comment[]>([]);
@@ -23,18 +23,12 @@ export default function MaterialDetailPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    if (!loading && !isAuthenticated) {
-      router.push('/login');
-    }
-  }, [isAuthenticated, loading, router]);
-
-  useEffect(() => {
-    if (isAuthenticated && params.id) {
+    if (params.id) {
       fetchMaterial();
       incrementViews();
       fetchComments();
     }
-  }, [isAuthenticated, params.id]);
+  }, [params.id]);
 
   const fetchMaterial = async () => {
     try {
@@ -127,7 +121,7 @@ export default function MaterialDetailPage() {
     }
   };
 
-  if (loading || isLoading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -210,24 +204,37 @@ export default function MaterialDetailPage() {
           </h2>
 
           {/* Comment Form */}
-          <form onSubmit={handleSubmitComment} className="mb-8">
-            <textarea
-              value={commentText}
-              onChange={(e) => setCommentText(e.target.value)}
-              placeholder="Tulis komentar Anda..."
-              rows={4}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none resize-none"
-              required
-            />
-            <button
-              type="submit"
-              disabled={isSubmitting || !commentText.trim()}
-              className="mt-3 flex items-center space-x-2 px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <Send size={18} />
-              <span>{isSubmitting ? 'Mengirim...' : 'Kirim Komentar'}</span>
-            </button>
-          </form>
+          {isAuthenticated ? (
+            <form onSubmit={handleSubmitComment} className="mb-8">
+              <textarea
+                value={commentText}
+                onChange={(e) => setCommentText(e.target.value)}
+                placeholder="Tulis komentar Anda..."
+                rows={4}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none resize-none"
+                required
+              />
+              <button
+                type="submit"
+                disabled={isSubmitting || !commentText.trim()}
+                className="mt-3 flex items-center space-x-2 px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Send size={18} />
+                <span>{isSubmitting ? 'Mengirim...' : 'Kirim Komentar'}</span>
+              </button>
+            </form>
+          ) : (
+            <div className="mb-8 rounded-lg bg-gray-100 px-4 py-3 text-gray-700">
+              Silakan{' '}
+              <button
+                onClick={() => router.push('/login')}
+                className="font-semibold text-green-600 hover:text-green-700"
+              >
+                masuk
+              </button>{' '}
+              untuk memberikan komentar.
+            </div>
+          )}
 
           {/* Comments List */}
           <div className="space-y-4">

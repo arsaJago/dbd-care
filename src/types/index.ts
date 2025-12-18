@@ -64,7 +64,10 @@ export interface QuizQuestion {
 }
 
 export interface ChecklistItem {
-  id: number;
-  text: string;
-  checked: boolean;
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  frequency: string;
+  order?: number;
 }
