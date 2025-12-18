@@ -1,6 +1,6 @@
 'use client';
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { db } from "@/lib/firebase";
@@ -35,7 +35,7 @@ interface ChecklistFormState {
   order: string;
 }
 
-export default function ManageChecklistPage() {
+function ManageChecklistPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { isAuthenticated, isAdmin } = useAuth();
@@ -232,14 +232,7 @@ export default function ManageChecklistPage() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 pt-16">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">Memuat data checklist...</p>
-        </div>
-      </div>
-    );
+    return <ChecklistSpinner message="Memuat data checklist..." />;
   }
 
   return (
@@ -432,5 +425,24 @@ export default function ManageChecklistPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+function ChecklistSpinner({ message }: { message: string }) {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 pt-16">
+      <div className="text-center">
+        <div className="w-16 h-16 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+        <p className="text-gray-600">{message}</p>
+      </div>
+    </div>
+  );
+}
+
+export default function ManageChecklistPage() {
+  return (
+    <Suspense fallback={<ChecklistSpinner message="Menyiapkan halaman checklist..." />}>
+      <ManageChecklistPageContent />
+    </Suspense>
   );
 }
