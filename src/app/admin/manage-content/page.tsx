@@ -5,8 +5,8 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { db } from '@/lib/firebase';
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
-import { BookOpen, FileImage, Video, Edit, Trash2, Eye, ClipboardCheck, ListChecks } from 'lucide-react';
-import { Material, Poster, Video as VideoType, ChecklistItem } from '@/types';
+import { BookOpen, FileImage, Video, Edit, Trash2, Eye, ClipboardCheck } from 'lucide-react';
+import { Material, Poster, Video as VideoType } from '@/types';
 
 export default function ManageContentPage() {
   const router = useRouter();
@@ -14,9 +14,8 @@ export default function ManageContentPage() {
   const [materials, setMaterials] = useState<Material[]>([]);
   const [posters, setPosters] = useState<Poster[]>([]);
   const [videos, setVideos] = useState<VideoType[]>([]);
-  const [checklists, setChecklists] = useState<ChecklistItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'materi' | 'poster' | 'video' | 'checklist' | 'quiz'>('materi');
+  const [activeTab, setActiveTab] = useState<'materi' | 'poster' | 'video' | 'quiz'>('materi');
   const [quizzes, setQuizzes] = useState<any[]>([]);
 
   useEffect(() => {
@@ -32,11 +31,10 @@ export default function ManageContentPage() {
   const fetchAllContent = async () => {
     try {
       setLoading(true);
-      const [materialsSnap, postersSnap, videosSnap, checklistsSnap, quizzesSnap] = await Promise.all([
+      const [materialsSnap, postersSnap, videosSnap, quizzesSnap] = await Promise.all([
         getDocs(collection(db, 'materials')),
         getDocs(collection(db, 'posters')),
         getDocs(collection(db, 'videos')),
-        getDocs(collection(db, 'checklist')),
         getDocs(collection(db, 'quizzes')),
       ]);
 
@@ -55,24 +53,9 @@ export default function ManageContentPage() {
         ...doc.data()
       })) as VideoType[];
 
-      const checklistsData = checklistsSnap.docs
-        .map((docSnapshot, index) => {
-          const data = docSnapshot.data() as Record<string, unknown>;
-          return {
-            id: docSnapshot.id,
-            title: (data.title as string) || `Checklist ${index + 1}`,
-            description: (data.description as string) || '',
-            category: (data.category as string) || 'Lainnya',
-            frequency: (data.frequency as string) || 'Tidak ditentukan',
-            order: typeof data.order === 'number' ? (data.order as number) : index + 1,
-          } satisfies ChecklistItem;
-        })
-        .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-
       setMaterials(materialsData);
       setPosters(postersData);
       setVideos(videosData);
-      setChecklists(checklistsData);
       setQuizzes(quizzesSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     } catch (error) {
       console.error('Error fetching content:', error);
@@ -82,7 +65,7 @@ export default function ManageContentPage() {
     }
   };
 
-  const handleDelete = async (type: 'materials' | 'posters' | 'videos' | 'checklist', id: string, title: string) => {
+  const handleDelete = async (type: 'materials' | 'posters' | 'videos', id: string, title: string) => {
     if (!confirm(`Apakah Anda yakin ingin menghapus "${title}"?`)) {
       return;
     }
@@ -122,7 +105,7 @@ export default function ManageContentPage() {
               Kelola Konten
             </h1>
             <p className="text-gray-600">
-              Lihat, edit, dan hapus materi, poster, video, quiz, dan checklist
+              Lihat, edit, dan hapus materi, poster, video, dan quiz
             </p>
           </div>
 
@@ -163,17 +146,6 @@ export default function ManageContentPage() {
                 Video ({videos.length})
               </button>
               <button
-                onClick={() => setActiveTab('checklist')}
-                className={`flex-1 px-6 py-4 font-semibold transition-colors flex items-center justify-center gap-2 ${
-                  activeTab === 'checklist'
-                    ? 'bg-indigo-500 text-white'
-                    : 'text-gray-600 hover:bg-gray-50'
-                }`}
-              >
-                <ListChecks size={20} />
-                Checklist ({checklists.length})
-              </button>
-              <button
                 onClick={() => setActiveTab('quiz')}
                 className={`flex-1 px-6 py-4 font-semibold transition-colors flex items-center justify-center gap-2 ${
                   activeTab === 'quiz'
@@ -186,70 +158,6 @@ export default function ManageContentPage() {
               </button>
             </div>
           </div>
-              {/* Checklist Tab */}
-              {activeTab === 'checklist' && (
-                <>
-                  <div className="bg-white rounded-xl shadow-md p-6 mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                    <div>
-                      <h3 className="text-xl font-semibold text-gray-800 mb-1">Checklist Pencegahan DBD</h3>
-                      <p className="text-gray-600 text-sm">Kelola item yang tampil pada halaman checklist pengguna.</p>
-                      <p className="text-xs text-gray-500 mt-2">{checklists.length} item aktif</p>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      <button
-                        onClick={() => router.push('/admin/manage-checklist')}
-                        className="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
-                      >
-                        <ListChecks size={16} />
-                        Kelola Checklist
-                      </button>
-                    </div>
-                  </div>
-
-                  {checklists.length === 0 ? (
-                    <div className="bg-white rounded-xl shadow-md p-12 text-center">
-                      <ListChecks className="mx-auto mb-4 text-gray-400" size={48} />
-                      <p className="text-gray-600">Belum ada checklist. Tambahkan item baru untuk memandu pengguna.</p>
-                    </div>
-                  ) : (
-                    checklists.map((item) => (
-                      <div
-                        key={item.id}
-                        className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-4 flex flex-col md:flex-row gap-4"
-                      >
-                        <div className="flex-1">
-                          <h3 className="text-lg font-bold text-gray-800 mb-1">{item.title}</h3>
-                          <p className="text-sm text-gray-600 mb-3">{item.description}</p>
-                          <div className="flex flex-wrap items-center gap-2 text-xs text-gray-500">
-                            <span className="inline-flex items-center gap-1 bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full font-semibold">
-                              {item.category}
-                            </span>
-                            <span>Frekuensi: {item.frequency}</span>
-                            <span>Urutan: {item.order ?? '-'}</span>
-                          </div>
-                        </div>
-                        <div className="flex gap-2 flex-shrink-0">
-                          <button
-                            onClick={() => router.push(`/admin/manage-checklist?edit=${item.id}`)}
-                            className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
-                          >
-                            <Edit size={16} />
-                            Edit
-                          </button>
-                          <button
-                            onClick={() => handleDelete('checklist', item.id, item.title)}
-                            className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
-                          >
-                            <Trash2 size={16} />
-                            Hapus
-                          </button>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </>
-              )}
-
               {/* Quiz Tab */}
             {activeTab === 'quiz' && (
               <>

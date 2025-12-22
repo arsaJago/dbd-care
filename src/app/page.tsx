@@ -97,8 +97,8 @@ export default function HomePage() {
     },
     {
       icon: ClipboardCheck,
-      title: 'Quiz & Checklist',
-      description: 'Uji pemahaman dan pantau kegiatan pencegahan DBD di rumah',
+      title: 'Quiz Interaktif',
+      description: 'Uji pemahaman DBD dengan pertanyaan singkat dan edukatif',
       color: 'from-purple-500 to-pink-500',
     },
   ];

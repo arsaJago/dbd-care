@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { BookOpen, Image as ImageIcon, Video, ClipboardCheck, List, TrendingUp } from 'lucide-react';
+import { BookOpen, Image as ImageIcon, Video, ClipboardCheck, TrendingUp } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { db } from '@/lib/firebase';
 import { collection, getDocs, query, orderBy, limit, where } from 'firebase/firestore';
@@ -89,13 +89,6 @@ export default function BerandaPage() {
       description: 'Uji pemahaman Anda',
       icon: ClipboardCheck,
       color: 'from-purple-500 to-pink-500',
-    },
-    {
-      href: '/checklist',
-      title: 'Checklist Pencegahan',
-      description: 'Pantau kegiatan pencegahan DBD',
-      icon: List,
-      color: 'from-orange-500 to-amber-500',
     },
   ];
 

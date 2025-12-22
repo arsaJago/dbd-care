@@ -30,7 +30,6 @@ export default function Header() {
     { href: '/poster', label: 'Poster', icon: Image },
     { href: '/video', label: 'Video', icon: Video },
     { href: '/quiz', label: 'Quiz', icon: ClipboardCheck },
-    { href: '/checklist', label: 'Checklist', icon: ClipboardCheck },
   ];
 
   const adminMenuItems = [
