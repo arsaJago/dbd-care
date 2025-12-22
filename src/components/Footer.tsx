@@ -20,7 +20,7 @@ export default function Footer() {
               <span className="text-xl font-bold">DBD Care</span>
             </div>
             <p className="text-gray-300 text-sm">
-              Platform edukasi Demam Berdarah Dengue untuk membantu orangtua menjadi agent perubahan dalam mencegah DBD di keluarga.
+              Platform edukasi Demam Berdarah Dengue untuk membantu orang tua menjadi agent perubahan dalam mencegah DBD.
             </p>
           </div>
 
@@ -57,15 +57,15 @@ export default function Footer() {
             <ul className="space-y-3 text-sm">
               <li className="flex items-center space-x-2">
                 <Mail size={16} className="text-green-400" />
-                <span className="text-gray-300">info@dbdcare.com</span>
+                <span className="text-gray-300">dbdcare@gmail.com</span>
               </li>
               <li className="flex items-center space-x-2">
                 <Phone size={16} className="text-green-400" />
-                <span className="text-gray-300">0800-1234-5678</span>
+                <span className="text-gray-300">0812-2692-9432</span>
               </li>
               <li className="flex items-center space-x-2">
                 <MapPin size={16} className="text-green-400" />
-                <span className="text-gray-300">Jakarta, Indonesia</span>
+                <span className="text-gray-300">Yogyakarta, Indonesia</span>
               </li>
             </ul>
           </div>
