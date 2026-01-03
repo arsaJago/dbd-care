@@ -106,14 +106,43 @@ export default function BerandaPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Welcome Section */}
-      <section className="bg-gradient-to-r from-green-500 to-blue-500 text-white py-12 px-4">
-        <div className="container mx-auto">
-          <h1 className="text-3xl md:text-4xl font-bold mb-2">
-            Halo{user?.username || ''}! 👋
-          </h1>
-          <p className="text-lg text-white/90">
-            Selamat datang di DBD Care. Mari belajar bersama mencegah DBD!
-          </p>
+      <section
+        className="relative text-white px-4 overflow-hidden"
+        style={{
+          backgroundImage: "url('/hero-bg.png')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-emerald-900/60 via-emerald-900/30 to-transparent" aria-hidden="true"></div>
+        <div className="container mx-auto py-14 md:py-20 lg:py-24 min-h-[360px] md:min-h-[420px] lg:min-h-[460px] flex items-center relative z-10">
+          <div className="max-w-2xl space-y-4">
+            <div className="inline-flex items-center px-3 py-1 bg-white/15 rounded-full text-sm font-semibold backdrop-blur-sm">
+              <span className="mr-2">Halo!</span>
+              <span aria-hidden="true">👋</span>
+            </div>
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight">
+              Cegah DBD Mulai Dari Sekarang
+            </h1>
+            <p className="text-base md:text-lg text-white/90">
+              DBD Care adalah media edukasi digital untuk meningkatkan pengetahuan dan sikap masyarakat dalam pencegahan Demam Berdarah Dengue dengan mudah dan interaktif.
+            </p>
+            <div className="flex flex-wrap items-center gap-3 pt-2">
+              <Link
+                href="/materi"
+                className="px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg shadow-lg shadow-emerald-900/30 transition duration-200"
+              >
+                Mulai Belajar
+              </Link>
+              <Link
+                href="/materi"
+                className="px-5 py-3 bg-white/80 text-emerald-800 hover:bg-white font-semibold rounded-lg transition duration-200"
+              >
+                Lihat Materi
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 

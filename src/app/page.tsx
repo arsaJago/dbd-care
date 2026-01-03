@@ -113,21 +113,42 @@ export default function HomePage() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-green-500 via-blue-500 to-purple-500 text-white py-20 px-4">
-        <div className="container mx-auto text-center max-w-4xl">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            Lindungi Keluarga dari DBD
-          </h1>
-          <p className="text-xl md:text-2xl mb-8 text-white/90">
-            Platform edukasi Demam Berdarah Dengue untuk membantu orangtua menjadi agent perubahan dalam mencegah DBD
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              href="/beranda"
-              className="px-8 py-4 bg-white text-green-600 font-bold rounded-lg hover:bg-gray-100 transition text-lg shadow-xl"
-            >
-              Mulai Belajar
-            </Link>
+      <section
+        className="relative text-white px-4 overflow-hidden"
+        style={{
+          backgroundImage: "url('/hero-bg.png')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-emerald-900/60 via-emerald-900/30 to-transparent" aria-hidden="true"></div>
+        <div className="container mx-auto py-14 md:py-20 lg:py-24 min-h-[360px] md:min-h-[420px] lg:min-h-[460px] flex items-center relative z-10">
+          <div className="max-w-2xl space-y-5">
+            <div className="inline-flex items-center px-4 py-1.5 bg-white/15 rounded-full text-sm font-semibold backdrop-blur-sm">
+              <span className="mr-2">Halo!</span>
+              <span aria-hidden="true">👋</span>
+            </div>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight">
+              Cegah DBD Mulai Dari Sekarang
+            </h1>
+            <p className="text-lg md:text-xl text-white/90">
+              DBD Care adalah media edukasi digital untuk meningkatkan pengetahuan dan sikap masyarakat dalam pencegahan Demam Berdarah Dengue dengan mudah dan interaktif.
+            </p>
+            <div className="flex flex-col sm:flex-row items-start gap-3 pt-2">
+              <Link
+                href="/materi"
+                className="px-6 sm:px-8 py-3 sm:py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg shadow-lg shadow-emerald-900/30 transition duration-200"
+              >
+                Mulai Belajar
+              </Link>
+              <Link
+                href="/materi"
+                className="px-6 sm:px-8 py-3 sm:py-4 bg-white/85 text-emerald-800 hover:bg-white font-semibold rounded-lg transition duration-200"
+              >
+                Lihat Materi
+              </Link>
+            </div>
           </div>
         </div>
       </section>
