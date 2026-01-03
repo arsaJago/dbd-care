@@ -125,9 +125,9 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-gradient-to-r from-emerald-900/60 via-emerald-900/30 to-transparent" aria-hidden="true"></div>
         <div className="container mx-auto py-14 md:py-20 lg:py-24 min-h-[360px] md:min-h-[420px] lg:min-h-[460px] flex items-center relative z-10">
           <div className="max-w-2xl space-y-5">
-            <div className="inline-flex items-center px-4 py-1.5 bg-white/15 rounded-full text-sm font-semibold backdrop-blur-sm">
-              <span className="mr-2">Halo!</span>
-              <span aria-hidden="true">👋</span>
+            <div className="inline-flex items-center px-3 py-1 bg-white/15 rounded-full text-2xl font-semibold backdrop-blur-sm">
+               <span className="mr-2">Halo!</span>
+               <span aria-hidden="true">👋</span>
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight">
               Cegah DBD Mulai Dari Sekarang
