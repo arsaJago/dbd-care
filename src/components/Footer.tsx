@@ -20,7 +20,7 @@ export default function Footer() {
               <span className="text-xl font-bold">DBD Care</span>
             </div>
             <p className="text-gray-300 text-sm">
-              Platform edukasi Demam Berdarah Dengue untuk membantu masyarakat menjadi agent perubahan dalam mencegah DBD.
+              Platform edukasi pencegahan Demam Berdarah Dengue untuk membantu masyarakat menjadi agent perubahan dalam mencegah DBD.
             </p>
           </div>
 
