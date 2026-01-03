@@ -151,7 +151,7 @@ export default function QuizPage() {
                 </li>
                 <li className="flex items-start">
                   <span className="mr-2">•</span>
-                  <span>Skor minimal 80% untuk mendapat badge "Pahlawan Anti DBD"</span>
+                  <span>Skor minimal 80% untuk mendapat badge "Pahlawan Cegah DBD"</span>
                 </li>
                 <li className="flex items-start">
                   <span className="mr-2">•</span>
