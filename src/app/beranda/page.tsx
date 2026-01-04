@@ -135,12 +135,6 @@ export default function BerandaPage() {
               >
                 Mulai Belajar
               </Link>
-              <Link
-                href="/materi"
-                className="px-5 py-3 bg-white/80 text-emerald-800 hover:bg-white font-semibold rounded-lg transition duration-200"
-              >
-                Lihat Materi
-              </Link>
             </div>
           </div>
         </div>

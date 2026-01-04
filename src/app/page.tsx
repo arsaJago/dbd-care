@@ -142,12 +142,6 @@ export default function HomePage() {
               >
                 Mulai Belajar
               </Link>
-              <Link
-                href="/materi"
-                className="px-6 sm:px-8 py-3 sm:py-4 bg-white/85 text-emerald-800 hover:bg-white font-semibold rounded-lg transition duration-200"
-              >
-                Lihat Materi
-              </Link>
             </div>
           </div>
         </div>
