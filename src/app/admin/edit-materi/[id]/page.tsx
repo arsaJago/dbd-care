@@ -145,8 +145,6 @@ export default function EditMateriPage() {
                 required
               >
                 <option value="Pencegahan">Pencegahan</option>
-                <option value="Gejala">Gejala</option>
-                <option value="Pengobatan">Pengobatan</option>
                 <option value="3M Plus">3M Plus</option>
               </select>
             </div>

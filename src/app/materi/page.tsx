@@ -20,7 +20,7 @@ export default function MateriPage() {
   const [selectedCategory, setSelectedCategory] = useState('Semua');
   const [isLoading, setIsLoading] = useState(true);
 
-  const categories = ['Semua', 'Pencegahan', 'Gejala', 'Pengobatan', '3M Plus'];
+  const categories = ['Semua', 'Pencegahan', '3M Plus'];
 
   // Halaman materi bisa diakses tanpa login
 

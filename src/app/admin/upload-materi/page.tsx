@@ -15,7 +15,7 @@ export default function UploadMateriPage() {
   const [success, setSuccess] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
-    category: 'Gejala',
+    category: 'Pencegahan',
     excerpt: '',
     content: '',
     thumbnailUrl: '',
@@ -63,7 +63,7 @@ export default function UploadMateriPage() {
       setSuccess(true);
       setFormData({
         title: '',
-        category: 'Gejala',
+        category: 'Pencegahan',
         excerpt: '',
         content: '',
         thumbnailUrl: '',
@@ -129,10 +129,8 @@ export default function UploadMateriPage() {
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
                     required
                   >
-                    <option value="Gejala">Gejala</option>
                     <option value="Pencegahan">Pencegahan</option>
-                    <option value="Penanganan">Penanganan</option>
-                    <option value="Edukasi">Edukasi</option>
+                    <option value="3M Plus">3M Plus</option>
                   </select>
                 </div>
 
