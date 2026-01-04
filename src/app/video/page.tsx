@@ -105,18 +105,21 @@ export default function VideoPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50 pt-16">
+    <div className="min-h-screen flex flex-col bg-gray-50 ">
       <main className="flex-grow">
         {/* Header Section */}
-        <section className="bg-gradient-to-r from-red-600 to-red-800 text-white py-12">
-          <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto text-center">
-              <h1 className="text-3xl md:text-4xl font-bold mb-4">
-                Video Edukasi DBD
-              </h1>
-              <p className="text-lg text-red-100">
-                Belajar tentang pencegahan DBD melalui video edukatif dan mudah dipahami
-              </p>
+        <section className="relative overflow-hidden bg-gradient-to-r from-indigo-700 via-indigo-600 to-sky-500 text-white py-14">
+          <div className="absolute -left-12 top-6 h-48 w-48 rounded-full bg-white/10 blur-3xl" aria-hidden="true"></div>
+          <div className="absolute right-0 -bottom-14 h-64 w-64 rounded-full bg-blue-300/25 blur-3xl" aria-hidden="true"></div>
+          <div className="container mx-auto px-4 relative z-10 text-center max-w-4xl">
+            <h1 className="text-3xl md:text-4xl font-bold mb-3">Video Edukasi DBD</h1>
+            <p className="text-white/90 text-base md:text-lg mb-4">
+              Tonton penjelasan singkat dan tenang terkait edukasi pencegahan Demam Berdarah.
+            </p>
+            <div className="flex flex-wrap justify-center gap-3 text-sm text-white/90">
+              <span className="px-3 py-1 rounded-full bg-white/15 border border-white/20">Durasi pendek</span>
+              <span className="px-3 py-1 rounded-full bg-white/15 border border-white/20">Bahasa sederhana</span>
+              <span className="px-3 py-1 rounded-full bg-white/15 border border-white/20">Bisa diputar ulang</span>
             </div>
           </div>
         </section>

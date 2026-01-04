@@ -132,15 +132,22 @@ export default function PosterPage() {
   const categories = ['Semua', ...Array.from(new Set(posters.map(p => p.category)))];
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50 pt-16">
+    <div className="min-h-screen flex flex-col bg-gray-50">
       <main className="flex-grow">
         {/* Header Section */}
-        <section className="bg-gradient-to-r from-green-600 to-green-800 text-white py-12">
-          <div className="container mx-auto px-4">
-            <h1 className="text-3xl md:text-4xl font-bold mb-4">Poster Edukasi DBD</h1>
-            <p className="text-lg text-green-100">
-              Download dan bagikan poster edukasi untuk mencegah DBD di lingkungan Anda
+        <section className="relative overflow-hidden bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-500 text-white py-14">
+          <div className="absolute -left-12 top-4 h-48 w-48 rounded-full bg-white/10 blur-3xl" aria-hidden="true"></div>
+          <div className="absolute right-0 -bottom-14 h-64 w-64 rounded-full bg-emerald-300/20 blur-3xl" aria-hidden="true"></div>
+          <div className="container mx-auto px-4 relative z-10 flex flex-col gap-4">
+            <h1 className="text-3xl md:text-4xl font-bold leading-tight">Poster Edukasi DBD</h1>
+            <p className="text-white/90 max-w-3xl text-base md:text-lg">
+              Koleksi poster edukasi pencegahan DBD sebagai sarana edukasi pencegahan DBD di masyarakat.
             </p>
+            <div className="flex flex-wrap gap-3 text-sm text-white/90">
+              <span className="px-3 py-1 rounded-full bg-white/15 border border-white/20">Ringkas</span>
+              <span className="px-3 py-1 rounded-full bg-white/15 border border-white/20">Mudah dipahami</span>
+              <span className="px-3 py-1 rounded-full bg-white/15 border border-white/20">Praktis</span>
+            </div>
           </div>
         </section>
 

@@ -86,18 +86,29 @@ export default function MateriPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
-      <div className="container mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">Materi Edukasi DBD</h1>
-          <p className="text-gray-600">
-            Pelajari berbagai materi tentang Demam Berdarah Dengue dan pencegahannya
+    <div className="min-h-screen bg-gray-50">
+      {/* Hero Section */}
+      <section className="relative px-4 pt-12 pb-16 overflow-hidden bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-500 text-white">
+        <div className="absolute -left-10 top-6 h-48 w-48 rounded-full bg-white/10 blur-3xl" aria-hidden="true"></div>
+        <div className="absolute right-0 -bottom-10 h-56 w-56 rounded-full bg-emerald-300/20 blur-3xl" aria-hidden="true"></div>
+        <div className="container mx-auto relative z-10 flex flex-col gap-4">
+          <h1 className="text-3xl md:text-4xl font-bold leading-tight">
+            Materi Edukasi Pencegahan DBD
+          </h1>
+          <p className="text-white/90 max-w-3xl text-base md:text-lg">
+            Kumpulan informasi singkat seputar pencegahan, gejala, dan penanganan DBD.
           </p>
+          <div className="flex flex-wrap gap-3 text-sm text-white/90">
+            <span className="px-3 py-1 rounded-full bg-white/15 border border-white/20">Ringkas</span>
+            <span className="px-3 py-1 rounded-full bg-white/15 border border-white/20">Mudah Dipahami</span>
+            <span className="px-3 py-1 rounded-full bg-white/15 border border-white/20">Praktis</span>
+          </div>
         </div>
+      </section>
 
+      <div className="container mx-auto px-4 pb-12 -mt-10">
         {/* Search and Filter */}
-        <div className="bg-white rounded-xl shadow-md p-6 mb-8">
+        <div className="bg-white rounded-2xl shadow-lg p-6 mb-8 border border-emerald-50">
           <div className="flex flex-col md:flex-row gap-4">
             {/* Search */}
             <div className="flex-1 relative">
