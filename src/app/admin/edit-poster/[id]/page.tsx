@@ -7,6 +7,8 @@ import { db } from '@/lib/firebase';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { ArrowLeft } from 'lucide-react';
 
+const ALLOWED_POSTER_CATEGORIES = ['Pencegahan', '3M Plus'] as const;
+
 export default function EditPosterPage() {
   const router = useRouter();
   const params = useParams();
@@ -16,7 +18,7 @@ export default function EditPosterPage() {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    category: 'Poster Anak' as 'Poster Anak' | 'Poster Keluarga' | 'Infografis',
+    category: 'Pencegahan' as (typeof ALLOWED_POSTER_CATEGORIES)[number],
     fileUrl: '',
     fileType: 'image' as 'image' | 'pdf',
   });
@@ -38,10 +40,13 @@ export default function EditPosterPage() {
 
       if (docSnap.exists()) {
         const data = docSnap.data();
+        const incomingCategory = ALLOWED_POSTER_CATEGORIES.includes(data.category)
+          ? (data.category as (typeof ALLOWED_POSTER_CATEGORIES)[number])
+          : 'Pencegahan';
         setFormData({
           title: data.title || '',
           description: data.description || '',
-          category: data.category || 'Poster Anak',
+          category: incomingCategory,
           fileUrl: data.fileUrl || '',
           fileType: data.fileType || 'image', // default to 'image' if undefined
         });
@@ -145,13 +150,13 @@ export default function EditPosterPage() {
               </label>
               <select
                 value={formData.category}
-                onChange={(e) => setFormData({ ...formData, category: e.target.value as any })}
+                onChange={(e) => setFormData({ ...formData, category: e.target.value as (typeof ALLOWED_POSTER_CATEGORIES)[number] })}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none bg-white text-gray-900"
                 required
               >
-                <option value="Poster Anak">Poster Anak</option>
-                <option value="Poster Keluarga">Poster Keluarga</option>
-                <option value="Infografis">Infografis</option>
+                {ALLOWED_POSTER_CATEGORIES.map((category) => (
+                  <option key={category} value={category}>{category}</option>
+                ))}
               </select>
             </div>
 

@@ -8,7 +8,7 @@ interface SequentialNavProps {
   total: number;
   nextHref: string;
   nextLabel: string;
-  variant?: 'green' | 'red' | 'purple' | 'gray';
+  variant?: 'green' | 'red' | 'purple' | 'gray' | 'blue';
   className?: string;
 }
 
@@ -17,6 +17,7 @@ const variantClasses: Record<string, string> = {
   red: 'bg-red-600 hover:bg-red-700 focus:ring-red-400',
   purple: 'bg-purple-600 hover:bg-purple-700 focus:ring-purple-400',
   gray: 'bg-gray-700 hover:bg-gray-800 focus:ring-gray-400',
+  blue: 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-400',
 };
 
 export const SequentialNav: React.FC<SequentialNavProps> = ({

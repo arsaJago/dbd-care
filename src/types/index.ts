@@ -11,7 +11,7 @@ export interface Material {
   id: string;
   title: string;
   content: string;
-  category: 'Pencegahan' | 'Gejala' | 'Pengobatan' | '3M Plus';
+  category: 'Pencegahan' | '3M Plus';
   thumbnailUrl: string;
   views: number;
   createdAt: Timestamp;
@@ -21,7 +21,7 @@ export interface Poster {
   id: string;
   title: string;
   description: string;
-  category: 'Poster Anak' | 'Poster Keluarga' | 'Infografis';
+  category: 'Pencegahan' | '3M Plus';
   fileUrl: string;
   fileType: 'image' | 'pdf';
   downloads: number;

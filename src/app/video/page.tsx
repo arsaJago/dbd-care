@@ -108,11 +108,11 @@ export default function VideoPage() {
     <div className="min-h-screen flex flex-col bg-gray-50 ">
       <main className="flex-grow">
         {/* Header Section */}
-        <section className="relative overflow-hidden bg-gradient-to-r from-indigo-700 via-indigo-600 to-sky-500 text-white py-14">
-          <div className="absolute -left-12 top-6 h-48 w-48 rounded-full bg-white/10 blur-3xl" aria-hidden="true"></div>
-          <div className="absolute right-0 -bottom-14 h-64 w-64 rounded-full bg-blue-300/25 blur-3xl" aria-hidden="true"></div>
+        <section className="relative overflow-hidden bg-gradient-to-r from-rose-700 via-red-600 to-amber-500 text-white py-14">
+          <div className="absolute -left-12 top-6 h-48 w-48 rounded-full bg-white/15 blur-3xl" aria-hidden="true"></div>
+          <div className="absolute right-0 -bottom-14 h-64 w-64 rounded-full bg-amber-300/25 blur-3xl" aria-hidden="true"></div>
           <div className="container mx-auto px-4 relative z-10 text-center max-w-4xl">
-            <h1 className="text-3xl md:text-4xl font-bold mb-3">Video Edukasi DBD</h1>
+            <h1 className="text-3xl md:text-4xl font-bold mb-3">Video Edukasi Pencegahan DBD</h1>
             <p className="text-white/90 text-base md:text-lg mb-4">
               Tonton penjelasan singkat dan tenang terkait edukasi pencegahan Demam Berdarah.
             </p>

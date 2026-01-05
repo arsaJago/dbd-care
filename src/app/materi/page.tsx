@@ -106,7 +106,7 @@ export default function MateriPage() {
         </div>
       </section>
 
-      <div className="container mx-auto px-4 pb-12 -mt-10">
+      <div className="container mx-auto px-4 pb-12 mt-6">
         {/* Search and Filter */}
         <div className="bg-white rounded-2xl shadow-lg p-6 mb-8 border border-emerald-50">
           <div className="flex flex-col md:flex-row gap-4">

@@ -6,12 +6,14 @@ import { useAuth } from '@/contexts/AuthContext';
 import { X, Search } from 'lucide-react';
 import SequentialNav from '@/components/SequentialNav';
 
+const ALLOWED_POSTER_CATEGORIES = ['Pencegahan', '3M Plus'] as const;
+
 // Placeholder posters with Unsplash images
 const placeholderPosters = [
   {
     id: '1',
-    title: 'Kenali Gejala DBD',
-    category: 'Gejala',
+    title: 'Cegah DBD dengan 3M Plus',
+    category: '3M Plus',
     imageUrl: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&h=800&fit=crop',
     downloadUrl: '#',
     downloads: 245,
@@ -26,16 +28,16 @@ const placeholderPosters = [
   },
   {
     id: '3',
-    title: 'Siklus Hidup Nyamuk Aedes',
-    category: 'Edukasi',
+    title: 'Checklist Pencegahan Rutin',
+    category: 'Pencegahan',
     imageUrl: 'https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=600&h=800&fit=crop',
     downloadUrl: '#',
     downloads: 156,
   },
   {
     id: '4',
-    title: 'Bahaya DBD untuk Anak',
-    category: 'Bahaya',
+    title: '3 Langkah 3M Plus',
+    category: '3M Plus',
     imageUrl: 'https://images.unsplash.com/photo-1581595220892-b0739db3ba8c?w=600&h=800&fit=crop',
     downloadUrl: '#',
     downloads: 203,
@@ -50,8 +52,8 @@ const placeholderPosters = [
   },
   {
     id: '6',
-    title: 'Fogging: Kapan Diperlukan?',
-    category: 'Penanganan',
+    title: 'Zona Bebas Jentik',
+    category: '3M Plus',
     imageUrl: 'https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=600&h=800&fit=crop',
     downloadUrl: '#',
     downloads: 98,
@@ -101,8 +103,14 @@ export default function PosterPage() {
       querySnapshot.forEach((doc) => {
         postersData.push({ id: doc.id, ...doc.data() });
       });
-      setPosters(postersData);
-      setFilteredPosters(postersData);
+      const normalized = postersData.map((poster) => {
+        const safeCategory = ALLOWED_POSTER_CATEGORIES.includes(poster.category)
+          ? poster.category
+          : 'Pencegahan';
+        return { ...poster, category: safeCategory };
+      });
+      setPosters(normalized);
+      setFilteredPosters(normalized);
     } catch (error) {
       console.error('Error fetching posters:', error);
     } finally {
@@ -129,17 +137,17 @@ export default function PosterPage() {
     setFilteredPosters(result);
   }, [searchQuery, selectedCategory, posters]);
 
-  const categories = ['Semua', ...Array.from(new Set(posters.map(p => p.category)))];
+  const categories = ['Semua', ...ALLOWED_POSTER_CATEGORIES];
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <main className="flex-grow">
         {/* Header Section */}
-        <section className="relative overflow-hidden bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-500 text-white py-14">
-          <div className="absolute -left-12 top-4 h-48 w-48 rounded-full bg-white/10 blur-3xl" aria-hidden="true"></div>
-          <div className="absolute right-0 -bottom-14 h-64 w-64 rounded-full bg-emerald-300/20 blur-3xl" aria-hidden="true"></div>
+        <section className="relative overflow-hidden bg-gradient-to-r from-sky-700 via-blue-600 to-indigo-700 text-white py-14">
+          <div className="absolute -left-12 top-4 h-48 w-48 rounded-full bg-white/15 blur-3xl" aria-hidden="true"></div>
+          <div className="absolute right-0 -bottom-14 h-64 w-64 rounded-full bg-blue-300/25 blur-3xl" aria-hidden="true"></div>
           <div className="container mx-auto px-4 relative z-10 flex flex-col gap-4">
-            <h1 className="text-3xl md:text-4xl font-bold leading-tight">Poster Edukasi DBD</h1>
+            <h1 className="text-3xl md:text-4xl font-bold leading-tight">Poster Edukasi Pencegahan DBD</h1>
             <p className="text-white/90 max-w-3xl text-base md:text-lg">
               Koleksi poster edukasi pencegahan DBD sebagai sarana edukasi pencegahan DBD di masyarakat.
             </p>
@@ -164,7 +172,7 @@ export default function PosterPage() {
                     placeholder="Cari poster..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none bg-white text-gray-900 placeholder-gray-400"
+                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-white text-gray-900 placeholder-gray-400"
                   />
                 </div>
 
@@ -176,7 +184,7 @@ export default function PosterPage() {
                       onClick={() => setSelectedCategory(category)}
                       className={`px-4 py-2 rounded-lg whitespace-nowrap font-medium transition-colors ${
                         selectedCategory === category
-                          ? 'bg-green-600 text-white'
+                          ? 'bg-blue-600 text-white'
                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                       }`}
                     >
@@ -222,7 +230,7 @@ export default function PosterPage() {
               </div>
             )}
             {/* Flow Navigation - Step 2 -> Video */}
-            <SequentialNav step={2} total={5} nextHref="/video" nextLabel="Video" variant="green" />
+            <SequentialNav step={2} total={5} nextHref="/video" nextLabel="Video" variant="blue" />
           </div>
         </div>
       </main>

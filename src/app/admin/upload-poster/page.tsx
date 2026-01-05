@@ -15,7 +15,7 @@ export default function UploadPosterPage() {
   const [success, setSuccess] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
-    category: 'Gejala',
+    category: 'Pencegahan',
     fileUrl: '', // gunakan fileUrl sebagai sumber utama
     downloadUrl: '',
   });
@@ -56,7 +56,7 @@ export default function UploadPosterPage() {
       setSuccess(true);
       setFormData({
         title: '',
-        category: 'Gejala',
+        category: 'Pencegahan',
         fileUrl: '',
         downloadUrl: '',
       });
@@ -92,17 +92,17 @@ export default function UploadPosterPage() {
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-4xl mx-auto">
             {/* Info Box */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-              <p className="text-blue-800">
+            <div className="bg-blue-100 border border-blue-300 rounded-lg p-4 mb-6">
+              <p className="text-blue-900">
                 <strong>Note:</strong> Karena Firebase Storage memerlukan upgrade billing, 
                 silakan upload poster ke layanan eksternal seperti:
               </p>
-              <ul className="list-disc list-inside text-blue-700 mt-2 space-y-1">
+              <ul className="list-disc list-inside text-blue-900 mt-2 space-y-1">
                 <li><a href="https://imgbb.com" target="_blank" className="underline">ImgBB</a> (gratis, tanpa login)</li>
                 <li><a href="https://cloudinary.com" target="_blank" className="underline">Cloudinary</a> (gratis, dengan login)</li>
                 <li><a href="https://postimages.org" target="_blank" className="underline">PostImages</a> (gratis)</li>
               </ul>
-              <p className="text-blue-700 mt-2">
+              <p className="text-blue-900 mt-2">
                 Copy URL gambar yang dihasilkan, lalu paste di form di bawah.
               </p>
             </div>
@@ -119,8 +119,8 @@ export default function UploadPosterPage() {
                     name="title"
                     value={formData.title}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                    placeholder="Contoh: Kenali Gejala DBD"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900 placeholder:text-gray-600"
+                    placeholder="Contoh: Tips 3M Plus Cegah DBD"
                     required
                   />
                 </div>
@@ -134,14 +134,11 @@ export default function UploadPosterPage() {
                     name="category"
                     value={formData.category}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900"
                     required
                   >
-                    <option value="Gejala">Gejala</option>
                     <option value="Pencegahan">Pencegahan</option>
-                    <option value="Penanganan">Penanganan</option>
-                    <option value="Edukasi">Edukasi</option>
-                    <option value="Bahaya">Bahaya</option>
+                    <option value="3M Plus">3M Plus</option>
                   </select>
                 </div>
 
@@ -155,7 +152,7 @@ export default function UploadPosterPage() {
                     name="fileUrl"
                     value={formData.fileUrl}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900 placeholder:text-gray-600"
                     placeholder="https://i.ibb.co/xxxxx/poster.jpg"
                     required
                   />
@@ -174,7 +171,7 @@ export default function UploadPosterPage() {
                     name="downloadUrl"
                     value={formData.downloadUrl}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900 placeholder:text-gray-600"
                     placeholder="https://example.com/poster-hd.jpg"
                   />
                   <p className="text-sm text-gray-500 mt-1">
