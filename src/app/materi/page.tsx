@@ -91,14 +91,14 @@ export default function MateriPage() {
       <section className="relative px-4 pt-12 pb-16 overflow-hidden bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-500 text-white">
         <div className="absolute -left-10 top-6 h-48 w-48 rounded-full bg-white/10 blur-3xl" aria-hidden="true"></div>
         <div className="absolute right-0 -bottom-10 h-56 w-56 rounded-full bg-emerald-300/20 blur-3xl" aria-hidden="true"></div>
-        <div className="container mx-auto relative z-10 flex flex-col gap-4">
+        <div className="container mx-auto relative z-10 flex flex-col items-center text-center gap-4">
           <h1 className="text-3xl md:text-4xl font-bold leading-tight">
             Materi Edukasi Pencegahan DBD
           </h1>
           <p className="text-white/90 max-w-3xl text-base md:text-lg">
             Kumpulan informasi singkat seputar pencegahan, gejala, dan penanganan DBD.
           </p>
-          <div className="flex flex-wrap gap-3 text-sm text-white/90">
+          <div className="flex flex-wrap justify-center gap-3 text-sm text-white/90">
             <span className="px-3 py-1 rounded-full bg-white/15 border border-white/20">Ringkas</span>
             <span className="px-3 py-1 rounded-full bg-white/15 border border-white/20">Mudah Dipahami</span>
             <span className="px-3 py-1 rounded-full bg-white/15 border border-white/20">Praktis</span>

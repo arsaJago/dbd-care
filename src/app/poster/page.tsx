@@ -146,12 +146,12 @@ export default function PosterPage() {
         <section className="relative overflow-hidden bg-gradient-to-r from-sky-700 via-blue-600 to-indigo-700 text-white py-14">
           <div className="absolute -left-12 top-4 h-48 w-48 rounded-full bg-white/15 blur-3xl" aria-hidden="true"></div>
           <div className="absolute right-0 -bottom-14 h-64 w-64 rounded-full bg-blue-300/25 blur-3xl" aria-hidden="true"></div>
-          <div className="container mx-auto px-4 relative z-10 flex flex-col gap-4">
+          <div className="container mx-auto px-4 relative z-10 flex flex-col items-center text-center gap-4">
             <h1 className="text-3xl md:text-4xl font-bold leading-tight">Poster Edukasi Pencegahan DBD</h1>
             <p className="text-white/90 max-w-3xl text-base md:text-lg">
               Koleksi poster edukasi pencegahan DBD sebagai sarana edukasi pencegahan DBD di masyarakat.
             </p>
-            <div className="flex flex-wrap gap-3 text-sm text-white/90">
+            <div className="flex flex-wrap justify-center gap-3 text-sm text-white/90">
               <span className="px-3 py-1 rounded-full bg-white/15 border border-white/20">Ringkas</span>
               <span className="px-3 py-1 rounded-full bg-white/15 border border-white/20">Mudah dipahami</span>
               <span className="px-3 py-1 rounded-full bg-white/15 border border-white/20">Praktis</span>
