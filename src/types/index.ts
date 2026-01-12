@@ -28,6 +28,17 @@ export interface Poster {
   createdAt: Timestamp;
 }
 
+export interface Leaflet {
+  id: string;
+  title: string;
+  description: string;
+  category: 'Pencegahan' | '3M Plus';
+  fileUrl: string;
+  fileType: 'image' | 'pdf';
+  downloads: number;
+  createdAt: Timestamp;
+}
+
 export interface Video {
   id: string;
   title: string;

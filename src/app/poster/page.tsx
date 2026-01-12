@@ -229,8 +229,8 @@ export default function PosterPage() {
                 <p className="text-gray-600 text-lg">Tidak ada poster ditemukan</p>
               </div>
             )}
-            {/* Flow Navigation - Step 2 -> Video */}
-            <SequentialNav step={2} total={5} nextHref="/video" nextLabel="Video" variant="blue" />
+            {/* Flow Navigation - Step 2 -> Leaflet */}
+            <SequentialNav step={2} total={6} nextHref="/leaflet" nextLabel="Leaflet" variant="blue" />
           </div>
         </div>
       </main>

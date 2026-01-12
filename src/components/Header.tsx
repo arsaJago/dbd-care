@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Home, BookOpen, Image, Video, ClipboardCheck, LogOut, LayoutDashboard } from 'lucide-react';
+import { Menu, X, Home, BookOpen, Image, Video, ClipboardCheck, LogOut, LayoutDashboard, FileText } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function Header() {
@@ -28,6 +28,7 @@ export default function Header() {
     { href: '/beranda', label: 'Beranda', icon: Home },
     { href: '/materi', label: 'Materi', icon: BookOpen },
     { href: '/poster', label: 'Poster', icon: Image },
+    { href: '/leaflet', label: 'Leaflet', icon: FileText },
     { href: '/video', label: 'Video', icon: Video },
     { href: '/quiz', label: 'Quiz', icon: ClipboardCheck },
   ];

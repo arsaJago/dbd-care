@@ -5,8 +5,31 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { db } from '@/lib/firebase';
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
-import { BookOpen, FileImage, Video, Edit, Trash2, Eye, ClipboardCheck } from 'lucide-react';
-import { Material, Poster, Video as VideoType } from '@/types';
+import { BookOpen, FileImage, Video, Edit, Trash2, Eye, ClipboardCheck, FileText } from 'lucide-react';
+import { Material, Poster, Video as VideoType, Leaflet } from '@/types';
+
+const extractDriveId = (url: string) => {
+  const bySlash = url.match(/\/d\/([^/]+)/);
+  if (bySlash?.[1]) return bySlash[1];
+  const byQuery = url.match(/[?&]id=([^&]+)/);
+  return byQuery?.[1];
+};
+
+const getDriveThumbnail = (url: string) => {
+  if (!url.includes('drive.google.com')) return url;
+  const id = extractDriveId(url);
+  if (!id) return url;
+  return `https://drive.google.com/thumbnail?id=${id}&sz=w600`;
+};
+
+const getDrivePreview = (url: string, fileType?: string) => {
+  if (!url.includes('drive.google.com')) return url;
+  const id = extractDriveId(url);
+  if (!id) return url;
+  const lower = fileType?.toLowerCase?.();
+  if (lower === 'pdf') return `https://drive.google.com/file/d/${id}/preview`;
+  return `https://drive.google.com/uc?export=view&id=${id}`;
+};
 
 export default function ManageContentPage() {
   const router = useRouter();
@@ -14,8 +37,9 @@ export default function ManageContentPage() {
   const [materials, setMaterials] = useState<Material[]>([]);
   const [posters, setPosters] = useState<Poster[]>([]);
   const [videos, setVideos] = useState<VideoType[]>([]);
+  const [leaflets, setLeaflets] = useState<Leaflet[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'materi' | 'poster' | 'video' | 'quiz'>('materi');
+  const [activeTab, setActiveTab] = useState<'materi' | 'poster' | 'leaflet' | 'video' | 'quiz'>('materi');
   const [quizzes, setQuizzes] = useState<any[]>([]);
 
   useEffect(() => {
@@ -31,9 +55,10 @@ export default function ManageContentPage() {
   const fetchAllContent = async () => {
     try {
       setLoading(true);
-      const [materialsSnap, postersSnap, videosSnap, quizzesSnap] = await Promise.all([
+      const [materialsSnap, postersSnap, leafletsSnap, videosSnap, quizzesSnap] = await Promise.all([
         getDocs(collection(db, 'materials')),
         getDocs(collection(db, 'posters')),
+        getDocs(collection(db, 'leaflets')),
         getDocs(collection(db, 'videos')),
         getDocs(collection(db, 'quizzes')),
       ]);
@@ -48,6 +73,11 @@ export default function ManageContentPage() {
         ...doc.data()
       })) as Poster[];
 
+      const leafletsData = leafletsSnap.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as Leaflet[];
+
       const videosData = videosSnap.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
@@ -55,6 +85,7 @@ export default function ManageContentPage() {
 
       setMaterials(materialsData);
       setPosters(postersData);
+      setLeaflets(leafletsData);
       setVideos(videosData);
       setQuizzes(quizzesSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     } catch (error) {
@@ -65,7 +96,7 @@ export default function ManageContentPage() {
     }
   };
 
-  const handleDelete = async (type: 'materials' | 'posters' | 'videos', id: string, title: string) => {
+  const handleDelete = async (type: 'materials' | 'posters' | 'leaflets' | 'videos', id: string, title: string) => {
     if (!confirm(`Apakah Anda yakin ingin menghapus "${title}"?`)) {
       return;
     }
@@ -80,7 +111,7 @@ export default function ManageContentPage() {
     }
   };
 
-  const handleEdit = (type: 'materi' | 'poster' | 'video', id: string) => {
+  const handleEdit = (type: 'materi' | 'poster' | 'leaflet' | 'video', id: string) => {
     router.push(`/admin/edit-${type}/${id}`);
   };
 
@@ -133,6 +164,17 @@ export default function ManageContentPage() {
               >
                 <FileImage size={20} />
                 Poster ({posters.length})
+              </button>
+              <button
+                onClick={() => setActiveTab('leaflet')}
+                className={`flex-1 px-6 py-4 font-semibold transition-colors flex items-center justify-center gap-2 ${
+                  activeTab === 'leaflet'
+                    ? 'bg-teal-500 text-white'
+                    : 'text-gray-600 hover:bg-gray-50'
+                }`}
+              >
+                <FileText size={20} />
+                Leaflet ({leaflets.length})
               </button>
               <button
                 onClick={() => setActiveTab('video')}
@@ -258,9 +300,15 @@ export default function ManageContentPage() {
                       className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-4 flex items-center gap-4"
                     >
                       <img
-                        src={item.fileUrl}
+                        src={getDriveThumbnail(item.fileUrl)}
                         alt={item.title}
-                        className="w-24 h-24 object-cover rounded-lg flex-shrink-0"
+                        className="w-24 h-24 object-cover rounded-lg flex-shrink-0 bg-gray-50"
+                        onError={(e) => {
+                          const target = e.currentTarget as HTMLImageElement & { dataset: { fallbackApplied?: string } };
+                          if (target.dataset.fallbackApplied === '1') return;
+                          target.dataset.fallbackApplied = '1';
+                          target.src = item.fileUrl;
+                        }}
                       />
                       <div className="flex-grow">
                         <h3 className="text-lg font-bold text-gray-800 mb-1">
@@ -283,6 +331,67 @@ export default function ManageContentPage() {
                         </button>
                         <button
                           onClick={() => handleDelete('posters', item.id, item.title)}
+                          className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
+                        >
+                          <Trash2 size={16} />
+                          Hapus
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </>
+            )}
+
+            {/* Leaflet Tab */}
+            {activeTab === 'leaflet' && (
+              <>
+                {leaflets.length === 0 ? (
+                  <div className="bg-white rounded-xl shadow-md p-12 text-center">
+                    <FileText className="mx-auto mb-4 text-gray-400" size={48} />
+                    <p className="text-gray-600">Belum ada leaflet</p>
+                  </div>
+                ) : (
+                  leaflets.map((item) => (
+                    <div
+                      key={item.id}
+                      className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-4 flex items-center gap-4"
+                    >
+                      <img
+                        src={getDriveThumbnail(item.fileUrl)}
+                        alt={item.title}
+                        className="w-24 h-24 object-cover rounded-lg flex-shrink-0 bg-gray-50"
+                        onError={(e) => {
+                          const target = e.currentTarget as HTMLImageElement & { dataset: { fallbackApplied?: string } };
+                          if (target.dataset.fallbackApplied === '1') {
+                            target.style.display = 'none';
+                            return;
+                          }
+                          target.dataset.fallbackApplied = '1';
+                          target.src = getDrivePreview(item.fileUrl, item.fileType);
+                        }}
+                      />
+                      <div className="flex-grow">
+                        <h3 className="text-lg font-bold text-gray-800 mb-1">
+                          {item.title}
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-2">
+                          <span className="inline-block bg-teal-100 text-teal-800 px-2 py-1 rounded text-xs font-semibold mr-2">
+                            {item.category}
+                          </span>
+                          <span>{item.downloads} downloads</span>
+                        </p>
+                      </div>
+                      <div className="flex gap-2 flex-shrink-0">
+                        <button
+                          onClick={() => handleEdit('leaflet', item.id)}
+                          className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
+                        >
+                          <Edit size={16} />
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDelete('leaflets', item.id, item.title)}
                           className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
                         >
                           <Trash2 size={16} />

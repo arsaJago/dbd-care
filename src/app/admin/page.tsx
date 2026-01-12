@@ -13,7 +13,8 @@ import {
   Eye,
   Download,
   Trophy,
-  List
+  List,
+  FileText
 } from 'lucide-react';
 import { db } from '@/lib/firebase';
 import { collection, getDocs, query, orderBy, limit } from 'firebase/firestore';
@@ -24,6 +25,7 @@ export default function AdminDashboard() {
   const [stats, setStats] = useState({
     materials: 0,
     posters: 0,
+    leaflets: 0,
     videos: 0,
     users: 0,
     comments: 0,
@@ -45,9 +47,10 @@ export default function AdminDashboard() {
   const fetchDashboardData = async () => {
     try {
       // Fetch stats
-      const [materialsSnap, postersSnap, videosSnap, usersSnap, commentsSnap] = await Promise.all([
+      const [materialsSnap, postersSnap, leafletsSnap, videosSnap, usersSnap, commentsSnap] = await Promise.all([
         getDocs(collection(db, 'materials')),
         getDocs(collection(db, 'posters')),
+        getDocs(collection(db, 'leaflets')),
         getDocs(collection(db, 'videos')),
         getDocs(collection(db, 'users')),
         getDocs(collection(db, 'comments')),
@@ -64,6 +67,7 @@ export default function AdminDashboard() {
       setStats({
         materials: materialsSnap.size,
         posters: postersSnap.size,
+        leaflets: leafletsSnap.size,
         videos: videosSnap.size,
         users: usersSnap.size,
         comments: commentsSnap.size,
@@ -117,6 +121,13 @@ export default function AdminDashboard() {
       href: '/admin/upload-poster',
     },
     {
+      title: 'Total Leaflet',
+      value: stats.leaflets,
+      icon: FileText,
+      color: 'bg-teal-500',
+      href: '/admin/upload-leaflet',
+    },
+    {
       title: 'Total Video',
       value: stats.videos,
       icon: Video,
@@ -157,6 +168,13 @@ export default function AdminDashboard() {
       icon: FileImage,
       href: '/admin/upload-poster',
       color: 'bg-green-500',
+    },
+    {
+      title: 'Upload Leaflet',
+      description: 'Tambahkan leaflet edukasi siap unduh',
+      icon: FileText,
+      href: '/admin/upload-leaflet',
+      color: 'bg-teal-500',
     },
     {
       title: 'Upload Video',

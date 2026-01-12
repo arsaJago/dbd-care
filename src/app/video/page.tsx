@@ -213,7 +213,7 @@ export default function VideoPage() {
               </div>
             )}
             {/* Flow Navigation - Step 3 -> Quiz */}
-            <SequentialNav step={3} total={5} nextHref="/quiz" nextLabel="Quiz" variant="red" />
+            <SequentialNav step={4} total={6} nextHref="/quiz" nextLabel="Quiz" variant="red" />
           </div>
         </div>
       </main>

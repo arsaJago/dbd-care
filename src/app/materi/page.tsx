@@ -156,7 +156,7 @@ export default function MateriPage() {
 
         {/* Flow Navigation - Step 1 -> Poster */}
         <div className="mt-12 flex flex-col items-center">
-          <div className="text-sm text-gray-500 mb-3">Langkah 1 dari 5</div>
+          <div className="text-sm text-gray-500 mb-3">Langkah 1 dari 6</div>
           <button
             onClick={() => router.push('/poster')}
             className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-green-600 hover:bg-green-700 text-white font-semibold shadow transition"
