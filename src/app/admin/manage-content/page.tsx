@@ -31,6 +31,19 @@ const getDrivePreview = (url: string, fileType?: string) => {
   return `https://drive.google.com/uc?export=view&id=${id}`;
 };
 
+const getImageSources = (url: string, fileType?: string) => {
+  const sources: string[] = [];
+  const isDrive = url.includes('drive.google.com');
+  const id = extractDriveId(url);
+  if (isDrive && id) {
+    sources.push(`https://drive.google.com/thumbnail?id=${id}&sz=w800`);
+    sources.push(`https://drive.google.com/uc?export=view&id=${id}`);
+    sources.push(`https://drive.google.com/uc?export=download&id=${id}`);
+  }
+  sources.push(fileType?.toLowerCase?.() === 'pdf' ? getDrivePreview(url, fileType) : url);
+  return Array.from(new Set(sources));
+};
+
 export default function ManageContentPage() {
   const router = useRouter();
   const { isAuthenticated, isAdmin } = useAuth();
@@ -300,14 +313,21 @@ export default function ManageContentPage() {
                       className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-4 flex items-center gap-4"
                     >
                       <img
-                        src={getDriveThumbnail(item.fileUrl)}
+                        src={getImageSources(item.fileUrl)[0]}
                         alt={item.title}
                         className="w-24 h-24 object-cover rounded-lg flex-shrink-0 bg-gray-50"
+                        data-src-queue={getImageSources(item.fileUrl).slice(1).join('|')}
+                        referrerPolicy="no-referrer"
                         onError={(e) => {
-                          const target = e.currentTarget as HTMLImageElement & { dataset: { fallbackApplied?: string } };
-                          if (target.dataset.fallbackApplied === '1') return;
-                          target.dataset.fallbackApplied = '1';
-                          target.src = item.fileUrl;
+                          const target = e.currentTarget as HTMLImageElement;
+                          const queue = (target.dataset.srcQueue || '').split('|').filter(Boolean);
+                          const next = queue.shift();
+                          if (next) {
+                            target.src = next;
+                            target.dataset.srcQueue = queue.join('|');
+                          } else {
+                            target.style.display = 'none';
+                          }
                         }}
                       />
                       <div className="flex-grow">
@@ -358,17 +378,21 @@ export default function ManageContentPage() {
                       className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-4 flex items-center gap-4"
                     >
                       <img
-                        src={getDriveThumbnail(item.fileUrl)}
+                        src={getImageSources(item.fileUrl, item.fileType)[0]}
                         alt={item.title}
                         className="w-24 h-24 object-cover rounded-lg flex-shrink-0 bg-gray-50"
+                        data-src-queue={getImageSources(item.fileUrl, item.fileType).slice(1).join('|')}
+                        referrerPolicy="no-referrer"
                         onError={(e) => {
-                          const target = e.currentTarget as HTMLImageElement & { dataset: { fallbackApplied?: string } };
-                          if (target.dataset.fallbackApplied === '1') {
+                          const target = e.currentTarget as HTMLImageElement;
+                          const queue = (target.dataset.srcQueue || '').split('|').filter(Boolean);
+                          const next = queue.shift();
+                          if (next) {
+                            target.src = next;
+                            target.dataset.srcQueue = queue.join('|');
+                          } else {
                             target.style.display = 'none';
-                            return;
                           }
-                          target.dataset.fallbackApplied = '1';
-                          target.src = getDrivePreview(item.fileUrl, item.fileType);
                         }}
                       />
                       <div className="flex-grow">

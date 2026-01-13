@@ -36,6 +36,21 @@ const getThumbnailUrl = (leaflet: Leaflet) => {
   return `https://drive.google.com/thumbnail?id=${id}&sz=w1000`;
 };
 
+const getImageSources = (leaflet: Leaflet) => {
+  const urls: string[] = [];
+  const isDrive = leaflet.fileUrl.includes('drive.google.com');
+  const id = extractDriveId(leaflet.fileUrl);
+
+  if (isDrive && id) {
+    urls.push(`https://drive.google.com/thumbnail?id=${id}&sz=w1000`);
+    urls.push(`https://drive.google.com/uc?export=view&id=${id}`);
+    urls.push(`https://drive.google.com/uc?export=download&id=${id}`);
+  }
+
+  urls.push(leaflet.fileUrl);
+  return Array.from(new Set(urls));
+};
+
 export default function LeafletPage() {
   const [leaflets, setLeaflets] = useState<Leaflet[]>([]);
   const [filtered, setFiltered] = useState<Leaflet[]>([]);
@@ -149,21 +164,31 @@ export default function LeafletPage() {
                   >
                     <div className="relative h-48 bg-gray-50 border-b border-gray-100">
                       {item.fileType?.toLowerCase?.() === 'image' ? (
+                        (() => {
+                          const sources = getImageSources(item);
+                          const rest = sources.slice(1).join('|');
+                          return (
                         <img
-                          src={getThumbnailUrl(item)}
+                              src={sources[0]}
                           alt={item.title}
                           className="w-full h-full object-cover"
                           loading="lazy"
                           onError={(e) => {
-                            const target = e.currentTarget as HTMLImageElement & { dataset: { fallbackApplied?: string } };
-                            if (target.dataset.fallbackApplied === '1') {
+                            const target = e.currentTarget as HTMLImageElement;
+                            const queue = (target.dataset.srcQueue || '').split('|').filter(Boolean);
+                            const next = queue.shift();
+                            if (next) {
+                              target.src = next;
+                              target.dataset.srcQueue = queue.join('|');
+                            } else {
                               target.style.display = 'none';
-                              return;
                             }
-                            target.dataset.fallbackApplied = '1';
-                            target.src = getPreviewUrl(item);
                           }}
+                          data-src-queue={rest}
+                          referrerPolicy="no-referrer"
                         />
+                          );
+                        })()
                       ) : item.fileType?.toLowerCase?.() === 'pdf' ? (
                         <iframe
                           src={`${getPreviewUrl(item)}#toolbar=0&navpanes=0&scrollbar=0`}
@@ -239,14 +264,30 @@ export default function LeafletPage() {
                   className="h-[80vh] w-full max-w-5xl rounded-lg bg-white"
                 />
               ) : (
-                <img
-                  src={getPreviewUrl(selectedLeaflet)}
-                  alt={selectedLeaflet.title}
-                  className="h-full w-full max-w-5xl object-contain"
-                  onError={(e) => {
-                    e.currentTarget.src = getThumbnailUrl(selectedLeaflet);
-                  }}
-                />
+                (() => {
+                  const sources = getImageSources(selectedLeaflet);
+                  const rest = sources.slice(1).join('|');
+                  return (
+                    <img
+                      src={sources[0]}
+                      alt={selectedLeaflet.title}
+                      className="h-full w-full max-w-5xl object-contain"
+                      data-src-queue={rest}
+                      referrerPolicy="no-referrer"
+                      onError={(e) => {
+                        const target = e.currentTarget as HTMLImageElement;
+                        const queue = (target.dataset.srcQueue || '').split('|').filter(Boolean);
+                        const next = queue.shift();
+                        if (next) {
+                          target.src = next;
+                          target.dataset.srcQueue = queue.join('|');
+                        } else {
+                          target.style.display = 'none';
+                        }
+                      }}
+                    />
+                  );
+                })()
               )}
             </div>
           </div>

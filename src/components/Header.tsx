@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Menu, X, Home, BookOpen, Image, Video, ClipboardCheck, LogOut, LayoutDashboard, FileText } from 'lucide-react';
@@ -8,6 +8,7 @@ import { useAuth } from '@/contexts/AuthContext';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isQuickMenuOpen, setIsQuickMenuOpen] = useState(false);
   const { isAuthenticated, isAdmin, logout, user } = useAuth();
   const pathname = usePathname();
 
@@ -22,7 +23,14 @@ export default function Header() {
   const handleLogout = () => {
     logout();
     closeMenu();
+    setIsQuickMenuOpen(false);
   };
+
+  useEffect(() => {
+    // Close menus when route changes
+    setIsMenuOpen(false);
+    setIsQuickMenuOpen(false);
+  }, [pathname]);
 
   const userMenuItems = [
     { href: '/beranda', label: 'Beranda', icon: Home },
@@ -82,12 +90,48 @@ export default function Header() {
           </nav>
 
           {/* User Info & Hamburger Menu */}
-          {isAuthenticated ? (
-            <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-3">
+            <div className="relative">
+              <button
+                onClick={() => setIsQuickMenuOpen((prev) => !prev)}
+                className="flex items-center space-x-2 px-3 py-2 rounded-lg border border-teal-600 bg-teal-600 text-white shadow-md hover:bg-teal-700 active:scale-[0.98] transition md:border-teal-200 md:bg-white/95 md:text-teal-700 md:shadow-sm md:hover:bg-teal-50"
+                aria-label="Menu cepat"
+              >
+                <Menu size={18} />
+                <span className="text-sm font-semibold">Menu</span>
+              </button>
+              {isQuickMenuOpen && (
+                <div className="absolute right-0 mt-2 w-56 rounded-lg border border-gray-200 bg-white shadow-lg z-50">
+                  <div className="py-2">
+                    {menuItems.map((item) => {
+                      const Icon = item.icon;
+                      return (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          onClick={() => setIsQuickMenuOpen(false)}
+                          className={`flex items-center gap-2 px-3 py-2 text-sm transition hover:bg-gray-50 ${
+                            pathname === item.href ? 'text-green-600 font-semibold' : 'text-gray-700'
+                          }`}
+                        >
+                          <Icon size={16} />
+                          <span>{item.label}</span>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {isAuthenticated && (
               <div className="hidden md:block text-right">
                 <p className="text-sm font-medium text-gray-800">{user?.username}</p>
                 <p className="text-xs text-gray-500">{user?.role === 'admin' ? 'Administrator' : 'User'}</p>
               </div>
+            )}
+
+            {isAuthenticated ? (
               <button
                 onClick={toggleMenu}
                 className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition"
@@ -95,19 +139,15 @@ export default function Header() {
               >
                 {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
               </button>
-            </div>
-          ) : null}
-
-          {!isAuthenticated && (
-            <div className="flex items-center space-x-3">
+            ) : (
               <Link
                 href="/login"
                 className="px-4 py-2 text-green-600 hover:bg-green-50 rounded-lg transition"
               >
                 Login
               </Link>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
 

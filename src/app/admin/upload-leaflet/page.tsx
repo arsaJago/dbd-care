@@ -33,6 +33,19 @@ const getThumbnailUrl = (fileUrl: string) => {
   return `https://drive.google.com/thumbnail?id=${id}&sz=w1000`;
 };
 
+const getImageSources = (fileUrl: string) => {
+  const sources: string[] = [];
+  const isDrive = fileUrl.includes('drive.google.com');
+  const id = extractDriveId(fileUrl);
+  if (isDrive && id) {
+    sources.push(`https://drive.google.com/thumbnail?id=${id}&sz=w1000`);
+    sources.push(`https://drive.google.com/uc?export=view&id=${id}`);
+    sources.push(`https://drive.google.com/uc?export=download&id=${id}`);
+  }
+  sources.push(fileUrl);
+  return Array.from(new Set(sources));
+};
+
 export default function UploadLeafletPage() {
   const router = useRouter();
   const { isAdmin } = useAuth();
@@ -207,21 +220,30 @@ export default function UploadLeafletPage() {
                     <div className="p-3 text-sm font-semibold text-gray-700">Pratinjau Leaflet</div>
                     <div className="bg-white">
                       {formData.fileType === 'image' ? (
-                        <img
-                          src={getThumbnailUrl(formData.fileUrl)}
-                          alt={formData.title || 'Preview leaflet'}
-                          className="w-full max-h-96 object-contain bg-gray-50"
-                          loading="lazy"
-                          onError={(e) => {
-                            const target = e.currentTarget as HTMLImageElement & { dataset: { fallbackApplied?: string } };
-                            if (target.dataset.fallbackApplied === '1') {
-                              target.style.display = 'none';
-                              return;
-                            }
-                            target.dataset.fallbackApplied = '1';
-                            target.src = getPreviewUrl(formData.fileUrl, formData.fileType);
-                          }}
-                        />
+                        (() => {
+                          const sources = getImageSources(formData.fileUrl);
+                          return (
+                            <img
+                              src={sources[0]}
+                              alt={formData.title || 'Preview leaflet'}
+                              className="w-full max-h-96 object-contain bg-gray-50"
+                              loading="lazy"
+                              data-src-queue={sources.slice(1).join('|')}
+                              referrerPolicy="no-referrer"
+                              onError={(e) => {
+                                const target = e.currentTarget as HTMLImageElement;
+                                const queue = (target.dataset.srcQueue || '').split('|').filter(Boolean);
+                                const next = queue.shift();
+                                if (next) {
+                                  target.src = next;
+                                  target.dataset.srcQueue = queue.join('|');
+                                } else {
+                                  target.style.display = 'none';
+                                }
+                              }}
+                            />
+                          );
+                        })()
                       ) : (
                         <iframe
                           src={`${getPreviewUrl(formData.fileUrl, formData.fileType)}#toolbar=0&navpanes=0&scrollbar=0`}
