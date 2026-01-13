@@ -19,7 +19,6 @@ export default function QuizPage() {
   const [questions, setQuestions] = useState<any[]>(defaultQuestions);
   const [selectedAnswers, setSelectedAnswers] = useState<number[]>(new Array(defaultQuestions.length).fill(-1));
   const [score, setScore] = useState(0);
-  const [showExplanation, setShowExplanation] = useState(false);
   useEffect(() => {
     const fetchQuiz = async () => {
       try {
@@ -48,7 +47,6 @@ export default function QuizPage() {
     setCurrentQuestion(0);
     setSelectedAnswers(new Array(questions.length).fill(-1));
     setScore(0);
-    setShowExplanation(false);
   };
 
   const handleSelectAnswer = (answerIndex: number) => {
@@ -60,14 +58,12 @@ export default function QuizPage() {
   const handleNext = () => {
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
-      setShowExplanation(false);
     }
   };
 
   const handlePrevious = () => {
     if (currentQuestion > 0) {
       setCurrentQuestion(currentQuestion - 1);
-      setShowExplanation(false);
     }
   };
 
@@ -228,18 +224,6 @@ export default function QuizPage() {
               ))}
             </div>
 
-            {/* Explanation (show after answered) */}
-            {isAnswered && showExplanation && (
-              <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <div className="flex items-start space-x-2">
-                  <CheckCircle className="text-blue-600 flex-shrink-0 mt-0.5" size={20} />
-                  <div>
-                    <p className="font-semibold text-blue-900 mb-1">Penjelasan:</p>
-                    <p className="text-sm text-blue-800">{question.explanation}</p>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
 
           {/* Navigation */}
@@ -252,16 +236,6 @@ export default function QuizPage() {
               <ArrowLeft size={20} />
               <span>Sebelumnya</span>
             </button>
-
-            {isAnswered && !showExplanation && (
-              <button
-                onClick={() => setShowExplanation(true)}
-                className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
-              >
-                Lihat Penjelasan
-              </button>
-            )}
-
             {isLastQuestion ? (
               <button
                 onClick={handleFinish}
