@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Search, Download, FileText } from 'lucide-react';
+import { Search, FileText, X } from 'lucide-react';
 import { db } from '@/lib/firebase';
-import { collection, getDocs, doc, updateDoc, increment } from 'firebase/firestore';
+import { collection, getDocs } from 'firebase/firestore';
 import { Leaflet } from '@/types';
 import SequentialNav from '@/components/SequentialNav';
 
@@ -36,20 +36,13 @@ const getThumbnailUrl = (leaflet: Leaflet) => {
   return `https://drive.google.com/thumbnail?id=${id}&sz=w1000`;
 };
 
-const getDownloadUrl = (leaflet: Leaflet) => {
-  const isDrive = leaflet.fileUrl.includes('drive.google.com');
-  if (!isDrive) return leaflet.fileUrl;
-  const id = extractDriveId(leaflet.fileUrl);
-  if (!id) return leaflet.fileUrl;
-  return `https://drive.google.com/uc?export=download&id=${id}`;
-};
-
 export default function LeafletPage() {
   const [leaflets, setLeaflets] = useState<Leaflet[]>([]);
   const [filtered, setFiltered] = useState<Leaflet[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<(typeof categories)[number]>('Semua');
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedLeaflet, setSelectedLeaflet] = useState<Leaflet | null>(null);
 
   useEffect(() => {
     fetchLeaflets();
@@ -83,18 +76,6 @@ export default function LeafletPage() {
     }
   };
 
-  const handleDownload = async (leaflet: Leaflet) => {
-    try {
-      const docRef = doc(db, 'leaflets', leaflet.id);
-      await updateDoc(docRef, { downloads: increment(1) });
-      setLeaflets((prev) => prev.map((l) => (l.id === leaflet.id ? { ...l, downloads: l.downloads + 1 } : l)));
-    } catch (error) {
-      console.error('Error updating downloads:', error);
-    }
-    const downloadUrl = getDownloadUrl(leaflet);
-    window.open(downloadUrl, '_blank');
-  };
-
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -115,11 +96,11 @@ export default function LeafletPage() {
           <div className="container mx-auto px-4 relative z-10 flex flex-col items-center text-center gap-4">
             <h1 className="text-3xl md:text-4xl font-bold leading-tight">Leaflet Edukasi DBD</h1>
             <p className="text-white/90 max-w-3xl text-base md:text-lg">
-              Koleksi leaflet edukasi pencegahan DBD yang siap diunduh dan dibagikan.
+              Koleksi leaflet edukasi pencegahan DBD untuk Masyarakat yang siap digunakan.
             </p>
             <div className="flex flex-wrap justify-center gap-3 text-sm text-white/90">
               <span className="px-3 py-1 rounded-full bg-white/15 border border-white/20">Praktis</span>
-              <span className="px-3 py-1 rounded-full bg-white/15 border border-white/20">Bisa dicetak</span>
+              <span className="px-3 py-1 rounded-full bg-white/15 border border-white/20">Edukatif</span>
               <span className="px-3 py-1 rounded-full bg-white/15 border border-white/20">Untuk keluarga</span>
             </div>
           </div>
@@ -163,7 +144,8 @@ export default function LeafletPage() {
                 {filtered.map((item) => (
                   <div
                     key={item.id}
-                    className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group"
+                    className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group cursor-pointer"
+                    onClick={() => setSelectedLeaflet(item)}
                   >
                     <div className="relative h-48 bg-gray-50 border-b border-gray-100">
                       {item.fileType?.toLowerCase?.() === 'image' ? (
@@ -211,13 +193,7 @@ export default function LeafletPage() {
                       <p className="text-sm text-gray-600 line-clamp-3">{item.description}</p>
                       <div className="flex items-center justify-between text-sm text-gray-500">
                         <span>{item.downloads} unduhan</span>
-                        <button
-                          onClick={() => handleDownload(item)}
-                          className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-teal-600 text-white text-sm font-semibold hover:bg-teal-700 transition"
-                        >
-                          <Download className="w-4 h-4" />
-                          Unduh
-                        </button>
+                        <span className="text-xs text-gray-400">Klik untuk perbesar</span>
                       </div>
                     </div>
                   </div>
@@ -233,6 +209,49 @@ export default function LeafletPage() {
           </div>
         </div>
       </main>
+
+      {selectedLeaflet && (
+        <div
+          className="fixed inset-0 z-50 bg-gray-950/80 backdrop-blur-sm"
+          onClick={() => setSelectedLeaflet(null)}
+        >
+          <div
+            className="relative flex h-full w-full flex-col overflow-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setSelectedLeaflet(null)}
+              className="absolute right-6 top-6 rounded-full bg-white/20 p-3 text-white transition hover:bg-white/40"
+            >
+              <X className="h-6 w-6" />
+            </button>
+            <div className="flex flex-1 flex-col items-center justify-center gap-4 px-4 py-12">
+              <div className="text-center text-white">
+                <h2 className="text-2xl font-semibold md:text-3xl">{selectedLeaflet.title}</h2>
+                <span className="mt-3 inline-flex items-center rounded-full bg-teal-500 px-4 py-1 text-sm font-medium text-white">
+                  {selectedLeaflet.category}
+                </span>
+              </div>
+              {selectedLeaflet.fileType?.toLowerCase?.() === 'pdf' ? (
+                <iframe
+                  src={`${getPreviewUrl(selectedLeaflet)}#toolbar=0&navpanes=0&scrollbar=0`}
+                  title={selectedLeaflet.title}
+                  className="h-[80vh] w-full max-w-5xl rounded-lg bg-white"
+                />
+              ) : (
+                <img
+                  src={getPreviewUrl(selectedLeaflet)}
+                  alt={selectedLeaflet.title}
+                  className="h-full w-full max-w-5xl object-contain"
+                  onError={(e) => {
+                    e.currentTarget.src = getThumbnailUrl(selectedLeaflet);
+                  }}
+                />
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
