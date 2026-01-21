@@ -15,6 +15,17 @@ export default function EditQuizPage() {
   const [saving, setSaving] = useState(false);
   const [questions, setQuestions] = useState<any[]>([]);
 
+  const normalizeQuestions = (items: any[]) =>
+    items.map((q) => {
+      const rawOptions = Array.isArray(q.options) ? q.options : [];
+      const options = rawOptions.slice(0, 2);
+      while (options.length < 2) options.push('');
+      const correctAnswer = typeof q.correctAnswer === 'number' && q.correctAnswer >= 0 && q.correctAnswer <= 1
+        ? q.correctAnswer
+        : 0;
+      return { ...q, options, correctAnswer };
+    });
+
   useEffect(() => {
     if (!isAuthenticated) {
       router.push("/login");
@@ -30,12 +41,12 @@ export default function EditQuizPage() {
       const docRef = doc(db, "quizzes", "main");
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
-        setQuestions(docSnap.data().questions || []);
+        setQuestions(normalizeQuestions(docSnap.data().questions || []));
       } else {
-        setQuestions(quizQuestions);
+        setQuestions(normalizeQuestions(quizQuestions));
       }
     } catch (error) {
-      setQuestions(quizQuestions);
+      setQuestions(normalizeQuestions(quizQuestions));
     } finally {
       setLoading(false);
     }
@@ -53,13 +64,15 @@ export default function EditQuizPage() {
     setSaving(true);
     try {
       const quizRef = doc(db, "quizzes", "main");
+      const normalizedQuestions = normalizeQuestions(questions);
       try {
-        await updateDoc(quizRef, { questions });
+        await updateDoc(quizRef, { questions: normalizedQuestions });
       } catch (err) {
         // Jika update gagal (dokumen belum ada), buat baru
         const { setDoc } = await import("firebase/firestore");
-        await setDoc(quizRef, { questions });
+        await setDoc(quizRef, { questions: normalizedQuestions });
       }
+      setQuestions(normalizedQuestions);
       alert("Quiz berhasil diperbarui!");
       router.push("/admin/manage-content");
     } catch (error) {

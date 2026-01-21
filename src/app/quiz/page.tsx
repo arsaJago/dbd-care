@@ -11,12 +11,23 @@ import { doc, getDoc } from 'firebase/firestore';
 
 type QuizState = 'intro' | 'quiz' | 'result';
 
+const normalizeQuestions = (items: any[]) =>
+  items.map((q) => {
+    const rawOptions = Array.isArray(q.options) ? q.options : [];
+    const options = rawOptions.slice(0, 2);
+    while (options.length < 2) options.push('');
+    const correctAnswer = typeof q.correctAnswer === 'number' && q.correctAnswer >= 0 && q.correctAnswer <= 1
+      ? q.correctAnswer
+      : 0;
+    return { ...q, options, correctAnswer };
+  });
+
 export default function QuizPage() {
   const { isAuthenticated, user, loading } = useAuth();
   const router = useRouter();
   const [quizState, setQuizState] = useState<QuizState>('intro');
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [questions, setQuestions] = useState<any[]>(defaultQuestions);
+  const [questions, setQuestions] = useState<any[]>(normalizeQuestions(defaultQuestions));
   const [selectedAnswers, setSelectedAnswers] = useState<number[]>(new Array(defaultQuestions.length).fill(-1));
   const [score, setScore] = useState(0);
   useEffect(() => {
@@ -25,16 +36,18 @@ export default function QuizPage() {
         const docRef = doc(db, 'quizzes', 'main');
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          const q = docSnap.data().questions || defaultQuestions;
+          const q = normalizeQuestions(docSnap.data().questions || defaultQuestions);
           setQuestions(q);
           setSelectedAnswers(new Array(q.length).fill(-1));
         } else {
-          setQuestions(defaultQuestions);
-          setSelectedAnswers(new Array(defaultQuestions.length).fill(-1));
+          const q = normalizeQuestions(defaultQuestions);
+          setQuestions(q);
+          setSelectedAnswers(new Array(q.length).fill(-1));
         }
       } catch (error) {
-        setQuestions(defaultQuestions);
-        setSelectedAnswers(new Array(defaultQuestions.length).fill(-1));
+        const q = normalizeQuestions(defaultQuestions);
+        setQuestions(q);
+        setSelectedAnswers(new Array(q.length).fill(-1));
       }
     };
     fetchQuiz();
@@ -139,7 +152,7 @@ export default function QuizPage() {
               <ul className="space-y-2 text-sm text-blue-800">
                 <li className="flex items-start">
                   <span className="mr-2">•</span>
-                  <span>Total 10 pertanyaan multiple choice</span>
+                  <span>Total 10 pertanyaan pilihan ganda (2 opsi)</span>
                 </li>
                 <li className="flex items-start">
                   <span className="mr-2">•</span>

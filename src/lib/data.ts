@@ -4,8 +4,8 @@ export const quizQuestions: QuizQuestion[] = [
   {
     id: 1,
     question: 'Nyamuk penyebab DBD adalah?',
-    options: ['Anopheles', 'Aedes Aegypti', 'Culex', 'Semua benar'],
-    correctAnswer: 1,
+    options: ['Aedes Aegypti', 'Anopheles'],
+    correctAnswer: 0,
     explanation: 'Aedes Aegypti adalah nyamuk penyebab Demam Berdarah Dengue. Nyamuk ini memiliki ciri khas bintik-bintik putih di tubuhnya.',
   },
   {
@@ -14,8 +14,6 @@ export const quizQuestions: QuizQuestion[] = [
     options: [
       'Menguras, Menutup, Mengubur + Plus',
       'Mencuci, Mengelap, Menyapu',
-      'Membersihkan, Membuang, Mengepel',
-      'Menyapu, Mencuci, Mengepel',
     ],
     correctAnswer: 0,
     explanation: '3M Plus adalah: Menguras tempat penampungan air, Menutup rapat tempat penampungan air, Mengubur atau membuang barang bekas, Plus menggunakan lotion anti nyamuk, memelihara ikan pemakan jentik, dll.',
@@ -24,43 +22,37 @@ export const quizQuestions: QuizQuestion[] = [
     id: 3,
     question: 'Gejala DBD yang paling khas adalah?',
     options: [
-      'Batuk dan pilek',
       'Demam tinggi mendadak disertai bintik merah',
-      'Sakit perut',
-      'Sakit kepala biasa',
+      'Batuk dan pilek',
     ],
-    correctAnswer: 1,
+    correctAnswer: 0,
     explanation: 'Gejala khas DBD adalah demam tinggi mendadak (>38°C) selama 2-7 hari, disertai bintik-bintik merah di kulit, nyeri sendi dan otot.',
   },
   {
     id: 4,
     question: 'Kapan waktu nyamuk Aedes Aegypti paling aktif menggigit?',
     options: [
-      'Malam hari',
       'Pagi dan sore hari',
-      'Tengah malam',
-      'Sepanjang hari sama',
+      'Malam hari',
     ],
-    correctAnswer: 1,
+    correctAnswer: 0,
     explanation: 'Nyamuk Aedes Aegypti paling aktif menggigit pada pagi hari (08:00-12:00) dan sore hari (15:00-17:00).',
   },
   {
     id: 5,
     question: 'Berapa lama masa inkubasi virus dengue dalam tubuh manusia?',
-    options: ['1-2 hari', '3-5 hari', '4-10 hari', '2 minggu'],
-    correctAnswer: 2,
+    options: ['4-10 hari', '1-2 hari'],
+    correctAnswer: 0,
     explanation: 'Masa inkubasi virus dengue adalah 4-10 hari, dengan rata-rata 4-7 hari setelah digigit nyamuk yang terinfeksi.',
   },
   {
     id: 6,
     question: 'Apa yang harus dilakukan PERTAMA jika ada gejala DBD?',
     options: [
-      'Minum obat antibiotik',
-      'Kompres air dingin',
       'Segera ke dokter/puskesmas',
-      'Tidur saja',
+      'Minum obat antibiotik',
     ],
-    correctAnswer: 2,
+    correctAnswer: 0,
     explanation: 'Jika ada gejala DBD, SEGERA periksakan ke dokter atau puskesmas untuk pemeriksaan darah. Jangan minum obat sembarangan!',
   },
   {
@@ -69,8 +61,6 @@ export const quizQuestions: QuizQuestion[] = [
     options: [
       'Jentik nyamuk di air',
       'Nyamuk dewasa yang terbang',
-      'Telur nyamuk',
-      'Semua stadium nyamuk',
     ],
     correctAnswer: 1,
     explanation: 'Fogging hanya efektif membunuh nyamuk dewasa yang sedang terbang. Tidak membunuh jentik di air atau telur nyamuk. Karena itu 3M tetap penting!',
@@ -78,13 +68,8 @@ export const quizQuestions: QuizQuestion[] = [
   {
     id: 8,
     question: 'Berapa kali setidaknya harus menguras bak mandi?',
-    options: [
-      'Sebulan sekali',
-      'Seminggu sekali',
-      '2 minggu sekali',
-      'Setiap hari',
-    ],
-    correctAnswer: 1,
+    options: ['Seminggu sekali', 'Sebulan sekali'],
+    correctAnswer: 0,
     explanation: 'Bak mandi harus dikuras minimal SEMINGGU SEKALI karena telur nyamuk dapat menetas dalam 7-10 hari.',
   },
   {
@@ -93,8 +78,6 @@ export const quizQuestions: QuizQuestion[] = [
     options: [
       'Lavender dan Serai',
       'Mawar',
-      'Kaktus',
-      'Anggrek',
     ],
     correctAnswer: 0,
     explanation: 'Lavender, serai (lemongrass), dan zodia adalah tanaman yang aromanya dapat mengusir nyamuk.',
@@ -105,8 +88,6 @@ export const quizQuestions: QuizQuestion[] = [
     options: [
       'Menyemprot nyamuk dengan racun',
       'Kegiatan memberantas jentik nyamuk di tempat perkembangbiakannya',
-      'Memasang jebakan nyamuk',
-      'Membunuh nyamuk dengan raket',
     ],
     correctAnswer: 1,
     explanation: 'PSN adalah kegiatan memberantas jentik nyamuk di tempat-tempat perkembangbiakannya melalui 3M Plus.',
