@@ -36,8 +36,16 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-128px)] flex items-center justify-center px-4 py-12">
-      <div className="max-w-md w-full">
+    <div className="relative min-h-[calc(100vh-128px)] flex items-center justify-center px-4 py-12 overflow-hidden bg-gradient-to-br from-emerald-50 via-sky-50 to-indigo-100">
+      {/* Decorative Background */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute -top-24 -left-24 h-72 w-72 rounded-full bg-emerald-300/40 blur-3xl" />
+        <div className="absolute top-1/3 -right-28 h-80 w-80 rounded-full bg-sky-300/40 blur-3xl" />
+        <div className="absolute -bottom-24 left-1/3 h-72 w-72 rounded-full bg-indigo-300/40 blur-3xl" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(15,23,42,0.08)_1px,transparent_0)] [background-size:24px_24px] opacity-40" />
+      </div>
+
+      <div className="max-w-md w-full relative">
         <div className="bg-white rounded-2xl shadow-xl p-8">
           {/* Header */}
           <div className="text-center mb-8">
