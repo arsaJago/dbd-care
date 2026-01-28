@@ -104,21 +104,6 @@ export default function LoginPage() {
           </form>
 
           {/* Footer */}
-          <div className="mt-6 text-center">
-            <p className="text-gray-600">
-              Belum punya akun?{' '}
-              <Link href="/register" className="text-green-600 hover:text-green-700 font-semibold">
-                Daftar Sekarang
-              </Link>
-            </p>
-          </div>
-
-          {/* Demo Credentials */}
-          <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <p className="text-xs font-semibold text-blue-800 mb-2">Demo Admin:</p>
-            <p className="text-xs text-blue-700">Username: admin</p>
-            <p className="text-xs text-blue-700">Password: admin123</p>
-          </div>
         </div>
       </div>
     </div>
