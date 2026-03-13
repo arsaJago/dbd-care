@@ -18,34 +18,6 @@ npm run dev
 
 Buka [http://localhost:3001](http://localhost:3001)
 
-## 👥 Default Login
-
-**Admin**: 
-- Username: `admin`
-- Password: `admin123`
-
-## 🌱 Seed Database
-
-Populate database dengan data dummy:
-
-```bash
-# Buka di browser
-http://localhost:3001/seed
-```
-
-Klik tombol "Seed Database" untuk menambahkan:
-- 5 Materi edukasi DBD
-- 6 Poster edukasi
-- 6 Video YouTube
-
-## 🧹 Clear Database (Optional)
-
-Hapus semua data konten untuk seed ulang:
-
-```bash
-# Buka di browser
-http://localhost:3001/clear
-```
 
 ## 📚 Full Documentation
 
